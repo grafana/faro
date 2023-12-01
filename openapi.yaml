@@ -1,0 +1,150 @@
+openapi: '3.0.0'
+info:
+  title: Faro Collector API
+  version: 1.0.0
+paths:
+  /collect/{appKey}:
+    post:
+      parameters:
+        - name: appKey
+          description: |
+            The application key is provided by your endpoint provider.
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payload'
+      summary: Submit a Faro payload
+      responses:
+        '202':
+          description: OK
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        name:
+          type: string
+          required: true
+        domain:
+          type: string
+          required: true
+        attributes:
+          type: object
+          required: false
+          additionalProperties:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+          required: true
+    Log:
+      type: object
+      properties:
+        message:
+          type: string
+          required: true
+        level:
+          type: string
+          required: true
+        context:
+          type: object
+          required: false
+          additionalProperties:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+          required: true
+        trace:
+          type: object
+          required: false
+          properties:
+            trace_id:
+              type: string
+              required: true
+            span_id:
+              type: string
+              required: true
+    StackFrame:
+      type: object
+      properties:
+        colno:
+          type: integer
+          required: false
+        filename:
+          type: string
+          required: false
+        function:
+          type: string
+          required: false
+        in_app:
+          type: boolean
+          required: false
+        lineno:
+          type: integer
+          required: false
+    Exception:
+      type: object
+      properties:
+        type:
+          type: string
+          required: true
+        value:
+          type: string
+          required: true
+        stacktrace:
+          type: array
+          items:
+            $ref: '#/components/schemas/StackFrame'
+          required: false
+          minItems: 0
+        timestamp:
+          type: string
+          format: date-time
+          required: true
+        trace:
+          type: object
+          required: false
+          properties:
+            trace_id:
+              type: string
+              required: true
+            span_id:
+              type: string
+              required: true
+        context:
+          type: object
+          required: false
+          additionalProperties:
+            type: string
+    Measurement:
+      type: object
+    Payload:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+          minItems: 0
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Log'
+          minItems: 0
+        exceptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exception'
+          minItems: 0
+        measurements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Measurement'
