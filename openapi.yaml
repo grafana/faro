@@ -1,4 +1,4 @@
-openapi: '3.0.0'
+openapi: '3.1.0'
 info:
   title: Faro Collector API
   version: 1.0.0
@@ -126,6 +126,34 @@ components:
             type: string
     Measurement:
       type: object
+      properties:
+        values:
+          type: object
+          required: true
+          additionalProperties:
+            type: number
+        type:
+          type: string
+          required: true
+        timestamp:
+          type: string
+          format: date-time
+          required: true
+        trace:
+          type: object
+          required: false
+          properties:
+            trace_id:
+              type: string
+              required: true
+            span_id:
+              type: string
+              required: true
+        context:
+          type: object
+          required: false
+          additionalProperties:
+            type: string
     Payload:
       type: object
       properties:
@@ -148,3 +176,93 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Measurement'
+        meta:
+          type: object
+          required: true
+          properties:
+            sdk:
+              type: object
+              required: true
+              properties:
+                name:
+                  type: string
+                  required: true
+                version:
+                  type: string
+                  required: true
+            app:
+              type: object
+              required: true
+              properties:
+                name:
+                  type: string
+                  required: true
+                release:
+                  type: string
+                  required: true
+                version:
+                  type: string
+                  required: true
+                environment:
+                  type: string
+                  required: true
+            user:
+              type: object
+              required: false
+              properties:
+                username:
+                  type: string
+                  required: false
+                id:
+                  type: string
+                  required: false
+                email:
+                  type: string
+                  required: false
+                attributes:
+                  type: object
+                  required: false
+                  additionalProperties:
+                    type: string
+            session:
+              type: object
+              required: false
+              properties:
+                id:
+                  type: string
+                  required: false
+                attributes:
+                  type: object
+                  required: false
+                  additionalProperties:
+                    type: string
+            page:
+              type: object
+              required: false
+              properties:
+                url:
+                  type: string
+                  required: false
+            browser:
+              type: object
+              required: false
+              properties:
+                name:
+                  type: string
+                  required: false
+                version:
+                  type: string
+                  required: false
+                os:
+                  type: string
+                  required: false
+                mobile:
+                  type: boolean
+                  required: false
+            view:
+              type: object
+              required: false
+              properties:
+                name:
+                  type: string
+                  required: false
