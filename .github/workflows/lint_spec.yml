@@ -5,7 +5,7 @@ on:
       - main
   pull_request:
 jobs:
-  test_job:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
