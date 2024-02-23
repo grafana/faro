@@ -29,9 +29,8 @@ Additionally it enriches these events with extra information which makes it poss
 what resources belong to a specific navigation, mapping to the previous navigation and if a navigation
 was loaded in foreground or background.
 
-Additionally Faro create a unique ID per event. Among other advantages, this enables to easily map
-resources to their parent navigation event and enables to identify the order of navigations throughout
-a user session by attaching information about the previous navigation as well.
+Additionally Faro creates a unique ID per event. Among other advantages, this enables to easily map
+loaded resources to their parent navigation event and enables to identify the order of navigations throughout a user session by mapping to the previous navigation as well.
 
 ## Event properties and metrics
 
