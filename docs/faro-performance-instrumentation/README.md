@@ -7,8 +7,8 @@
 To enable the measurement of different performance characteristics of a web-application, a web browser provides an
 API to receive detailed performance metrics across the lifetime of a web-application.
 
-Among different performance metrics a browser provides information related to the navigation ([PerformanceNavigationTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming))
-of a document and resources loaded by a page ([PerformanceResourceTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming)).
+Among the different performance metrics a browser provides, information related to the performance of loading and rendering a document ([PerformanceNavigationTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming))
+or the resources loaded by a page ([PerformanceResourceTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming)).
 
 !["Timestamp diagram listing navigation and resource timestamps in the order in which they are recorded for fetching and rendering of a document"](./README_timestamp-diagram.svg)
 
