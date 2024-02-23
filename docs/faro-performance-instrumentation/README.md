@@ -35,7 +35,7 @@ loaded resources to their parent navigation event and enables to identify the or
 ## Event properties and metrics
 
 Faro calculates the most important loading and rendering metrics alongside some other useful information
-and creates creates a `faro.performance.navigation` or `faro.performance.resource` respectively which contain that data.
+and creates a `faro.performance.navigation` or `faro.performance.resource` event which contains that data.
 
 !["Timestamp diagram listing faro specific navigation and resource timestamps in the order in which they are recorded for fetching and rendering of a document"](./faro-timestamp-diagram.png)
 
@@ -49,53 +49,48 @@ metrics and properties.
 
 #### Metrics
 
-**duration**
+- duration<br>
+  The complete navigation time.
+  Taken from the `duration` property which is the `loadEventEnd - startTime`
 
-The complete navigation time.
-Taken from the `duration` property which is the `loadEventEnd - startTime`
+- pageLoadTime<br>
+  The time the page takes to load and render.
+  This is the time between the browser starts fetching a resource and when the document and all sub-resources have finished loading. Calculated with (`domComplete - fetchStart`).
 
-**pageLoadTime**
+- domProcessingTime<br>
+  How long it takes to load resources like images and videos and to execute Javascript which has been loaded after `DOMContentLoaded` event. This is when the page is already loaded and a users can interact with the page but some processing is still going on.
+  Calculated with (`domComplete - domInteractive`).
 
-The time the page takes to load and render.
-This is the time between the browser starts fetching a resource and when the document and all sub-resources have finished loading. Calculated with (`domComplete - fetchStart`).
+  This also contains the time frameworks and libraries take to load, because they typically wait for the DOMContentLoaded event before starting to execute their code. [See MDN](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming/domContentLoadedEventEnd).
 
-**domProcessingTime**
+- domContentLoadHandlerTime<br>
+  This is the time to execute deferred scripts.
+  The duration should be kept at <= 50ms (see [DOMContentLoaded event](https://developer.mozilla.org/en-US/docs/Web/Performance/Navigation_and_resource_timings#domcontentloaded_event))
 
-How long it takes to load resources like images and videos and to execute Javascript which has been loaded after `DOMContentLoaded` event. This is when the page is already loaded and a users can interact with the page but some processing is still going on.
-Calculated with (`domComplete - domInteractive`).
+- onLoadTime<br>
+  The time it takes to execute scripts which are delayed to be executed after the `load` event as been fired.
+  Calculated with (`loadEventEnd - loadEventStart`)
 
-This also contains the time frameworks and libraries take to load, because they typically wait for the DOMContentLoaded event before starting to execute their code. [See MDN](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming/domContentLoadedEventEnd).
-
-**domContentLoadHandlerTime**
-This is the time to execute deferred scripts.
-The duration should be kept at <= 50ms (see [DOMContentLoaded event](https://developer.mozilla.org/en-US/docs/Web/Performance/Navigation_and_resource_timings#domcontentloaded_event))
-
-**onLoadTime**
-
-The time it takes to execute scripts which are delayed to be executed after the `load` event as been fired.
-Calculated with (`loadEventEnd - loadEventStart`)
-
-**ttfb (time to first byte)**
-
-Time to first byte is the time between the browser requesting a page and when it receives the first byte from the server.
-(`responseStart`) or for prerendered pages. Calculated with (`responseStart - activationStart`).
+- ttfb (time to first byte)<br>
+  Time to first byte is the time between the browser requesting a page and when it receives the first byte from the server.
+  (`responseStart`) or for prerendered pages. Calculated with (`responseStart - activationStart`).
 
 #### Other properties
 
-**faroNavigationId**
-Unique ID which identifies the specific browser navigation.
+- faroNavigationId<br>
+  Unique ID which identifies the specific browser navigation.
 
-**faroPreviousNavigationId**
-Unique ID which identifies the previous navigation.
-If there is no previous navigation, like for the first navigation, the value is set to `unknown`.
+- faroPreviousNavigationId<br>
+  Unique ID which identifies the previous navigation.
+  If there is no previous navigation, like for the first navigation, the value is set to `unknown`.
 
-**type**
-The type of the navigation which can be `back_forward` | `navigate` | `prerender` | `reload`;
+- type<br>
+  The type of the navigation which can be `back_forward` | `navigate` | `prerender` | `reload`;
 
-**visibilityState**
-The visibility of the page during the navigation, received from `document.visibilityState`.
-This is useful to be able to remove noise and get more accurate results when filtering out hidden navigations, because browsers prioritize visible / foreground work. So tabs loaded in the background
-are usually slower then foreground navigations.
+- visibilityState<br>
+  The visibility of the page during the navigation, received from `document.visibilityState`.
+  This is useful to be able to remove noise and get more accurate results when filtering out hidden navigations, because browsers prioritize visible / foreground work. So tabs loaded in the background
+  are usually slower then foreground navigations.
 
 ### Faro Resource Event
 
@@ -104,80 +99,66 @@ downloaded by during the a page load (navigation) such as images, CSS, JavaScrip
 
 #### Metrics
 
-**duration**
+- duration<br>
+  The time of the complete resource load.
+  Taken from the `duration` property which is `responseEnd - startTime`.
 
-The time of the complete resource load.
-Taken from the `duration` property which is `responseEnd - startTime`.
+- dnsLookupTime<br>
+  DNS lookup time. Calculated with (`domainLookupEnd - domainLookupStart`)
 
-**dnsLookupTime**
+- tcpHandshakeTime<br>
+  TCP handshake time. Calculated with (`connectEnd - connectStart`)
 
-DNS lookup time. Calculated with (`domainLookupEnd - domainLookupStart`)
+- tlsNegotiationTime<br>
+  TLS negotiation time. Calculated with (`requestStart - secureConnectionStart`)
 
-**tcpHandshakeTime**
+- redirectTime<br>
+  The time it takes to follow all redirects in the HTTP servers response.
+  Redirection time. Calculated with (`redirectEnd - redirectStart`)
 
-TCP handshake time. Calculated with (`connectEnd - connectStart`)
+- requestTime<br>
+  Request time. Calculated with (`responseStart - requestStart`)
 
-**tlsNegotiationTime**
+- fetchTime
+  Time to fetch a resource, without redirects. Calculated with (`responseEnd - fetchStart`)
 
-TLS negotiation time. Calculated with (`requestStart - secureConnectionStart`)
-
-**redirectTime**
-
-The time it takes to follow all redirects in the HTTP servers response.
-Redirection time. Calculated with (`redirectEnd - redirectStart`)
-
-**requestTime**
-
-Request time. Calculated with (`responseStart - requestStart`)
-
-**fetchTime**
-
-Time to fetch a resource, without redirects. Calculated with (`responseEnd - fetchStart`)
-
-**serviceWorkerTime**
-
-ServiceWorker processing time. Calculated with (`fetchStart - workerStart`)
+- serviceWorkerTime
+  ServiceWorker processing time. Calculated with (`fetchStart - workerStart`)
 
 #### Other properties
 
-**name**
+- name<br>
+  The resource's URL
 
-The resource's URL
+- initiatorType<br>
+  This is the element which triggered the resource download (`initiatorType`).
+  This is **NOT** the "Content Type" of the resource!
 
-**initiatorType**
+- protocol<br>
+  Network protocol used to fetch a resource, as identified by the [ALPN Protocol ID (RFC7301)](https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids) (`nextHopProtocol`)
 
-This is the element which triggered the resource download (`initiatorType`).
-This is **NOT** the "Content Type" of the resource!
+- decodedBodySize<br>
+  The size (in octets) received from the fetch (HTTP or cache) of the message body after removing any applied content encoding (like gzip or Brotli). If the resource is retrieved from an application cache or local resources, it returns the size of the payload after removing any applied content encoding (taken from [MDN decodedBodySize property](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/decodedBodySize)).
 
-**protocol**
+- encodedBodySize<br>
+  The size (in octets) received from the fetch (HTTP or cache) of the payload body before removing any applied content encodings (like gzip or Brotli). If the resource is retrieved from an application cache or a local resource, it must return the size of the payload body before removing any applied content encoding (taken from [MDN encodedBodySize](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/encodedBodySize) property).
 
-Network protocol used to fetch a resource, as identified by the [ALPN Protocol ID (RFC7301)](https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids) (`nextHopProtocol`)
+- cacheHitStatus<br>
+  If the resource is loaded from cache and what type of cache it is loaded from it has.
+  Possible values:
 
-**decodedBodySize**
+  - `cache` direct cache hit, directly loaded from the browser cache
+  - `conditionalFetch` loaded via a 304
+  - `fullLoad` resource is fully loaded from the server
 
-The size (in octets) received from the fetch (HTTP or cache) of the message body after removing any applied content encoding (like gzip or Brotli). If the resource is retrieved from an application cache or local resources, it returns the size of the payload after removing any applied content encoding (taken from [MDN decodedBodySize property](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/decodedBodySize)).
+- renderBlockingStatus<br>
+  The renderBlockingStatus status of the resource as automatically determined by the browser or resource which have the `blocking="render"` attribute added manually.
 
-**encodedBodySize**
+  Possible values:
 
-The size (in octets) received from the fetch (HTTP or cache) of the payload body before removing any applied content encodings (like gzip or Brotli). If the resource is retrieved from an application cache or a local resource, it must return the size of the payload body before removing any applied content encoding (taken from [MDN encodedBodySize](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/encodedBodySize) property).
-
-**cacheHitStatus**
-
-If the resource is loaded from cache and what type of cache it is loaded from it has.
-Possible values:
-
-- `cache` direct cache hit, directly loaded from the browser cache
-- `conditionalFetch` loaded via a 304
-- `fullLoad` resource is fully loaded from the server
-
-**renderBlockingStatus**
-
-The renderBlockingStatus status of the resource as automatically determined by the browser or resource which have the `blocking="render"` attribute added manually.
-
-Possible values:
-`blocking` the resource potentially blocks rendering
-`non-blocking` the resource does not block rendering
-`unknown`: The `renderBlockingStatus` property is currently **NOT** available in Firefox and Chrome. For theses browsers the value is undefined.
+  - `blocking` the resource potentially blocks rendering
+  - `non-blocking` the resource does not block rendering
+  - `unknown`: The `renderBlockingStatus` property is currently **NOT** available in Firefox and Chrome. For theses browsers the value is undefined.
 
 ## Getting started
 
