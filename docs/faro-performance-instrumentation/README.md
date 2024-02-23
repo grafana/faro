@@ -4,7 +4,7 @@
 > This doc is WIP.
 > Once finished,we delete the README file and add teh documentation to the Grafana cloud docs.
 
-To enable measuring of different performance characteristics of a web-application, browser provide an
+To enable the measurement of different performance characteristics of a web-application, a web browser provides an
 API to receive detailed performance metrics across the lifetime of a web-application.
 
 Among different performance metrics a browser provides information related to the navigation ([PerformanceNavigationTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming))
@@ -187,9 +187,9 @@ To disable it set `enablePerformanceInstrumentation` to false in te Faro config.
 
 ```ts
 initializeFaro({
-  url: 'https://my-domain.my-tld/collect/{app-key}',
+  url: "https://my-domain.my-tld/collect/{app-key}",
   app: {
-    name: 'my-app',
+    name: "my-app",
   },
   instrumentations: [
     ...getWebInstrumentations({
