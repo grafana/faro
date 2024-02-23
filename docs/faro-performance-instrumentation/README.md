@@ -12,18 +12,18 @@ or the resources loaded by a page, emitted as a [PerformanceResourceTiming](http
 
 !["Timestamp diagram listing navigation and resource timestamps in the order in which they are recorded for fetching and rendering of a document"](./README_timestamp-diagram.svg)
 
-> Think of a navigation as single full page load, like a user opens the page, reloads a page or follows a link like a menu item which loads a new page
+> Think of a navigation as a single full page load, like a user opens the page, reloads a page or follows a link like a menu item which loads a new page
 
-> A resource is data loaded while navigating the page, such JavaScript or CSS files, images or fonts.
+> A resource is the data loaded while navigating the page, such JavaScript or CSS files, images or fonts.
 
 It is important to be able to get insights into navigation and resource performance of a web-application.
 For example to find out where time is spent for a slow navigation or to get insights into what resources
 are loaded by a page, the loading performance of those resources and much more.
 
-The `PerformanceNavigationTiming` and `PerformanceResourceTiming` entries as emitted by the browser
-contain a lot of very technical information.
+The `PerformanceNavigationTiming` and `PerformanceResourceTiming` entries emitted by the browser
+contain a lot of technical information.
 
-To make it easier to use and interpret those metrics, Faro captures above entries and calculates custom
+To make it easier to track and interpret those metrics, Faro captures above entries and calculates custom
 metrics from them which it sends as events of type `faro.performance.navigation` and `faro.performance.resource`.
 Additionally it enriches these events with extra information which makes it possible to directly find out
 what resources belong to a specific navigation, mapping to the previous navigation and if a navigation
