@@ -1,169 +1,12 @@
-# Track Navigation and Resource performance.
+# Track Navigation and Resource performance
 
-> NOTE:
-> This doc is WIP.
-> Once finished,we delete the README file and add teh documentation to the Grafana cloud docs.
-
-To enable the measurement of different performance characteristics of a web-application, a web browser provides an
-API to receive detailed performance metrics across the lifetime of a web-application.
-
-Among the different performance metrics a browser provides, information related to the performance of loading and rendering a document, called a navigation, emitted as a ([PerformanceNavigationTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming))
-or the resources loaded by a page, emitted as a [PerformanceResourceTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming)).
-
-!["Timestamp diagram listing navigation and resource timestamps in the order in which they are recorded for fetching and rendering of a document"](./README_timestamp-diagram.svg)
-
-> Think of a navigation as a single full page load, like a user opens the page, reloads a page or follows a link like a menu item which loads a new page
-
-> A resource is the data loaded while navigating the page, such JavaScript or CSS files, images or fonts.
-
-It is important to be able to get insights into navigation and resource performance of a web-application.
-For example to find out where time is spent for a slow navigation or to get insights into what resources
-are loaded by a page, the loading performance of those resources and much more.
-
-The `PerformanceNavigationTiming` and `PerformanceResourceTiming` entries emitted by the browser
-contain a lot of technical information.
-
-To make it easier to track and interpret those metrics, Faro captures above entries and calculates custom
-metrics from them which it sends as events of type `faro.performance.navigation` and `faro.performance.resource`.
-Additionally it enriches these events with extra information which makes it possible to directly find out
-what resources belong to a specific navigation, mapping to the previous navigation and if a navigation
-was loaded in foreground or background.
-
-Additionally Faro creates a unique ID per event. Among other advantages, this enables to easily map
-loaded resources to their parent navigation event and enables to identify the order of navigations throughout a user session by mapping to the previous navigation as well.
-
-## Event properties and metrics
-
-Faro calculates the most important loading and rendering metrics alongside some other useful information
-and creates a `faro.performance.navigation` or `faro.performance.resource` event which contains that data.
-
-!["Timestamp diagram listing faro specific navigation and resource timestamps in the order in which they are recorded for fetching and rendering of a document"](./faro-timestamp-diagram.png)
-
-### Faro Navigation Event
-
-The `faro.performance.navigation` event contains metrics about the loading and rendering performance of
-a page alongside other useful metrics.
-
-It contains all metrics from `faro.performance.resource` event (see section below) plus the following
-metrics and properties.
-
-#### Metrics
-
-- duration<br>
-  The complete navigation time.
-  Taken from the `duration` property which is the `loadEventEnd - startTime`
-
-- pageLoadTime<br>
-  The time the page takes to load and render.
-  This is the time between the browser starts fetching a resource and when the document and all sub-resources have finished loading. Calculated with (`domComplete - fetchStart`).
-
-- domProcessingTime<br>
-  How long it takes to load resources like images and videos and to execute Javascript which has been loaded after `DOMContentLoaded` event. This is when the page is already loaded and a users can interact with the page but some processing is still going on.
-  Calculated with (`domComplete - domInteractive`).
-
-  This also contains the time frameworks and libraries take to load, because they typically wait for the DOMContentLoaded event before starting to execute their code. [See MDN](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming/domContentLoadedEventEnd).
-
-- domContentLoadHandlerTime<br>
-  This is the time to execute deferred scripts.
-  The duration should be kept at <= 50ms (see [DOMContentLoaded event](https://developer.mozilla.org/en-US/docs/Web/Performance/Navigation_and_resource_timings#domcontentloaded_event))
-
-- onLoadTime<br>
-  The time it takes to execute scripts which are delayed to be executed after the `load` event as been fired.
-  Calculated with (`loadEventEnd - loadEventStart`)
-
-- ttfb (time to first byte)<br>
-  Time to first byte is the time between the browser requesting a page and when it receives the first byte from the server.
-  (`responseStart`) or for prerendered pages. Calculated with (`responseStart - activationStart`).
-
-#### Other properties
-
-- faroNavigationId<br>
-  Unique ID which identifies the specific browser navigation.
-
-- faroPreviousNavigationId<br>
-  Unique ID which identifies the previous navigation.
-  If there is no previous navigation, like for the first navigation, the value is set to `unknown`.
-
-- type<br>
-  The type of the navigation which can be `back_forward` | `navigate` | `prerender` | `reload`;
-
-- visibilityState<br>
-  The visibility of the page during the navigation, received from `document.visibilityState`.
-  This is useful to be able to remove noise and get more accurate results when filtering out hidden navigations, because browsers prioritize visible / foreground work. So tabs loaded in the background
-  are usually slower then foreground navigations.
-
-### Faro Resource Event
-
-The `faro.performance.resource` event contains metrics about the loading performance of the resources
-downloaded by during the a page load (navigation) such as images, CSS, JavaScript, fonts and so on.
-
-#### Metrics
-
-- duration<br>
-  The time of the complete resource load.
-  Taken from the `duration` property which is `responseEnd - startTime`.
-
-- dnsLookupTime<br>
-  DNS lookup time. Calculated with (`domainLookupEnd - domainLookupStart`)
-
-- tcpHandshakeTime<br>
-  TCP handshake time. Calculated with (`connectEnd - connectStart`)
-
-- tlsNegotiationTime<br>
-  TLS negotiation time. Calculated with (`requestStart - secureConnectionStart`)
-
-- redirectTime<br>
-  The time it takes to follow all redirects in the HTTP servers response.
-  Redirection time. Calculated with (`redirectEnd - redirectStart`)
-
-- requestTime<br>
-  Request time. Calculated with (`responseStart - requestStart`)
-
-- fetchTime
-  Time to fetch a resource, without redirects. Calculated with (`responseEnd - fetchStart`)
-
-- serviceWorkerTime
-  ServiceWorker processing time. Calculated with (`fetchStart - workerStart`)
-
-#### Other properties
-
-- name<br>
-  The resource's URL
-
-- initiatorType<br>
-  This is the element which triggered the resource download (`initiatorType`).
-  This is **NOT** the "Content Type" of the resource!
-
-- protocol<br>
-  Network protocol used to fetch a resource, as identified by the [ALPN Protocol ID (RFC7301)](https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#alpn-protocol-ids) (`nextHopProtocol`)
-
-- decodedBodySize<br>
-  The size (in octets) received from the fetch (HTTP or cache) of the message body after removing any applied content encoding (like gzip or Brotli). If the resource is retrieved from an application cache or local resources, it returns the size of the payload after removing any applied content encoding (taken from [MDN decodedBodySize property](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/decodedBodySize)).
-
-- encodedBodySize<br>
-  The size (in octets) received from the fetch (HTTP or cache) of the payload body before removing any applied content encodings (like gzip or Brotli). If the resource is retrieved from an application cache or a local resource, it must return the size of the payload body before removing any applied content encoding (taken from [MDN encodedBodySize](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/encodedBodySize) property).
-
-- cacheHitStatus<br>
-  If the resource is loaded from cache and what type of cache it is loaded from it has.
-  Possible values:
-
-  - `cache` direct cache hit, directly loaded from the browser cache
-  - `conditionalFetch` loaded via a 304
-  - `fullLoad` resource is fully loaded from the server
-
-- renderBlockingStatus<br>
-  The renderBlockingStatus status of the resource as automatically determined by the browser or resource which have the `blocking="render"` attribute added manually.
-
-  Possible values:
-
-  - `blocking` the resource potentially blocks rendering
-  - `non-blocking` the resource does not block rendering
-  - `unknown`: The `renderBlockingStatus` property is currently **NOT** available in Firefox and Chrome. For theses browsers the value is undefined.
+The Faro Web SDK Performance Instrumentation automatically instruments website navigation (page loading and rendering) and resource (JavaScript, CSS, images, and other files) performance to help you identify performance bottlenecks and make performance improvements.
 
 ## Getting started
 
-The Performance Instrumentation is enabled by default.
-To disable it set `enablePerformanceInstrumentation` to false in te Faro config.
+Performance Instrumentation is enabled by default and can be disabled if it not needed to reduce your usage and billing.
+
+To disable Performance Instrumentation set `enablePerformanceInstrumentation` to false when initializing Faro:
 
 ```ts
 initializeFaro({
@@ -178,3 +21,66 @@ initializeFaro({
   ],
 });
 ```
+
+## Performance instrumentation explained
+
+The Faro Web SDK uses browser APIs to retrieve detailed performance metrics and calculates, enriches, and sends custom metrics as `faro.performance.navigation` and `faro.performance.resource` events. Faro creates a unique ID per event, to map resources to navigation events and order navigation events in a session.
+
+The [PerformanceNavigationTiming (MDN Web Docs)](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming) interfaces provides metrics on loading and rendering a single full document, for example opening a page, reloading a page, or following a link to another page.
+
+The [PerformanceResourceTiming (MDN Web Docs)](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming) interface provides detailed network data for loading resources, for example loading JavaScript, CSS, images, or fonts.
+
+!["Timestamp diagram listing faro specific navigation and resource timestamps in the order in which they are recorded for fetching and rendering of a document"](./faro-timestamp-diagram.png)
+
+### Navigation event
+
+The `faro.performance.navigation` contains all metrics from `faro.performance.resource` event and the following
+metrics and properties:
+
+**Metrics**
+
+- `duration`: the full navigation time, `loadEventEnd - startTime`
+- `pageLoadTime`: the time to load and render a page, `domComplete - fetchStart`
+- `domProcessingTime`: the time to load and execute resources after `DOMContentLoaded`, `domComplete - domInteractive`
+- `domContentLoadHandlerTime`: the time to execute delayed scripts after the `load` event, `loadEventEnd - loadEventStart`
+- `ttfb`: the time from making the request to receiving the first byte from server, `responseStart - activationStart`
+
+**Properties**
+
+- `faroNavigationId`: unique ID for the navigation
+- `faroPreviousNavigationId`: unique ID for the previous navigation, or `unknown`
+- `type`: the navigation type, `back_forward,navigate,prerender,reload`
+- `visibilityState`: the visibility of the page during the navigation
+
+The `visibilityState` property can be useful to remove noise and get accurate results when filtering out hidden navigations, because browsers prioritize visible/foreground work and tabs loaded in the background are usually slower.
+
+### Resource event
+
+The `faro.performance.resource` event contains the following metrics and properties:
+
+**Metrics**
+
+- `duration`: the full resource load time, `responseEnd - startTime`
+- `dnsLookupTime` the DNS lookup time, `domainLookupEnd - domainLookupStart`
+- `tcpHandshakeTime`: the TCP handshake time, `connectEnd - connectStart`
+- `tlsNegotiationTime`: the TLS negotiation time, `requestStart - secureConnectionStart`
+- `redirectTime`: the time to follow all redirects, `redirectEnd - redirectStart`
+- `requestTime`: the request time, `responseStart - requestStart`
+- `fetchTime`: the time to fetch a resource without redirects, `responseEnd - fetchStart`
+- `serviceWorkerTime`: the ServiceWorker processing time, `fetchStart - workerStart`
+
+**Properties**
+
+- `name`: the resource URL
+- `initiatorType`: the element, not content type, that triggered the resource download
+- `protocol`: the network protocol used to fetch the resource
+- `decodedBodySize`: the size in octets of the message body after removing content encoding
+- `encodedBodySize`: the size in octets of the payload body before removing any applied content encodings
+- `cacheHitStatus`: the type of cache the resource was loaded from:
+  - `cache`: direct cache hit
+  - `conditionalFetch`: loaded via a 304
+  - `fullLoad`: loaded from the server
+- `renderBlockingStatus`: the render block status of a resource which has the `blocking="render"` attribute:
+  - `blocking` the resource potentially blocks rendering
+  - `non-blocking` the resource does not block rendering
+  - `unknown`: the `renderBlockingStatus` property is **NOT** available in Firefox and Chrome
