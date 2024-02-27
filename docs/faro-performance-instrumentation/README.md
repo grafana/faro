@@ -4,7 +4,7 @@ The Faro Web SDK Performance Instrumentation automatically instruments website n
 
 ## Getting started
 
-Performance Instrumentation is enabled by default and can be disabled if it not needed to reduce your usage and billing.
+Performance Instrumentation is enabled by default and can be disabled if it not needed.
 
 To disable Performance Instrumentation set `enablePerformanceInstrumentation` to false when initializing Faro:
 
