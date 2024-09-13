@@ -22,233 +22,196 @@ paths:
               $ref: '#/components/schemas/Payload'
       summary: Submit a Faro payload
       responses:
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exception'
         '202':
           description: OK
 components:
   schemas:
     Event:
       type: object
+      required: [name, domain, timestamp]
       properties:
         name:
           type: string
-          required: true
         domain:
           type: string
-          required: true
         attributes:
           type: object
-          required: false
+          
           additionalProperties:
             type: string
         timestamp:
           type: string
           format: date-time
-          required: true
     Log:
       type: object
+      required: [message, level, timestamp]
       properties:
         message:
           type: string
-          required: true
         level:
           type: string
-          required: true
         context:
           type: object
-          required: false
           additionalProperties:
             type: string
         timestamp:
           type: string
           format: date-time
-          required: true
         trace:
           type: object
-          required: false
+          required: [trace_id, span_id]
           properties:
             trace_id:
               type: string
-              required: true
             span_id:
               type: string
-              required: true
     StackFrame:
       type: object
       properties:
         colno:
           type: integer
-          required: false
         filename:
           type: string
-          required: false
         function:
           type: string
-          required: false
         in_app:
           type: boolean
-          required: false
         lineno:
           type: integer
-          required: false
     Exception:
       type: object
+      required: [type, value, timestamp]
       properties:
         type:
           type: string
-          required: true
         value:
           type: string
-          required: true
         stacktrace:
           type: array
           items:
             $ref: '#/components/schemas/StackFrame'
-          required: false
+          
           minItems: 0
         timestamp:
           type: string
           format: date-time
-          required: true
         trace:
           type: object
-          required: false
+          
           properties:
             trace_id:
               type: string
-              required: true
             span_id:
               type: string
-              required: true
         context:
           type: object
-          required: false
+          
           additionalProperties:
             type: string
     Measurement:
       type: object
+      required: [values, type, timestamp]
       properties:
         values:
           type: object
-          required: true
+          json: omitempty
           additionalProperties:
             type: number
         type:
           type: string
-          required: true
         timestamp:
           type: string
           format: date-time
-          required: true
         trace:
           type: object
-          required: false
           properties:
             trace_id:
               type: string
-              required: true
             span_id:
               type: string
-              required: true
         context:
           type: object
-          required: false
           additionalProperties:
             type: string
     SpanEvent:
       type: object
-      required: true
+      required: [name]
       properties:
         attributes:
           type: array
         droppedAttributesCount:
           type: integer
-          required: false
         name:
           type: string
-          required: true
         timeUnixNano:
           type: string
     SdkMeta:
       type: object
-      required: true
+      required: [name, version]
       properties:
         name:
           type: string
-          required: true
         version:
           type: string
-          required: true
     AppMeta:
       type: object
-      required: true
+      required: [name, release, version, environment]
       properties:
         name:
           type: string
-          required: true
         release:
           type: string
-          required: true
         version:
           type: string
-          required: true
         environment:
           type: string
-          required: true
     UserMeta:
       type: object
-      required: false
       properties:
         username:
           type: string
-          required: false
         id:
           type: string
-          required: false
         email:
           type: string
-          required: false
         attributes:
           type: object
-          required: false
           additionalProperties:
             type: string
     SessionMeta:
       type: object
-      required: false
       properties:
         id:
           type: string
-          required: false
         attributes:
           type: object
-          required: false
           additionalProperties:
             type: string
     PageMeta:
       type: object
-      required: false
       properties:
         url:
           type: string
-          required: false
     BrowserMeta:
       type: object
-      required: false
       properties:
         name:
           type: string
-          required: false
         version:
           type: string
-          required: false
         os:
           type: string
-          required: false
         mobile:
           type: boolean
-          required: false
     Payload:
       type: object
+      required: [meta]
       properties:
         events:
           type: array
@@ -271,7 +234,6 @@ components:
             $ref: '#/components/schemas/Measurement'
         meta:
           type: object
-          required: true
           properties:
             sdk:
               $ref: '#/components/schemas/SdkMeta'
@@ -287,96 +249,80 @@ components:
               $ref: '#/components/schemas/BrowserMeta'
             view:
               type: object
-              required: false
               properties:
                 name:
                   type: string
-                  required: false
         traces:
           type: object
-          required: false
           properties:
             resourceSpans:
               type: array
               items:
                 type: object
-                required: true
+                required: [resource, instrumentationLibrarySpans]
                 properties:
                   resource:
                     type: object
-                    required: true
                     properties:
                       attributes:
                         type: object
-                        required: false
+                        required: [key, value]
                         properties:
                           key:
                             type: string
-                            required: true
                           value:
                             type: object
-                            required: true
                             additionalProperties:
                               type: string
                   instrumentationLibrarySpans:
                     type: array
                     items:
                       type: object
-                      required: true
+                      required: [instrumentationLibrary]
                       properties:
                         instrumentationLibrary:
                           type: object
-                          required: true
+                          required: [name, version]
                           properties:
                             name:
                               type: string
-                              required: true
                             version:
                               type: string
-                              required: true
                         spans:
                           type: array
                           items:
                             type: object
-                            required: true
+                            required: [kind, name, spanId, startTimeUnixNano, endTimeUnixNano, status, traceId]
                             properties:
                               attributes:
                                 type: object
-                                required: false
+                                required: [key, value]
                                 properties:
                                   key:
                                     type: string
-                                    required: true
                                   value:
-                                    required: true
+                                    type: object
                                     oneof:
-                                      - type: object
-                                        properties:
+                                      - properties:
                                           stringValue:
                                             type: string
-                                      - type: object
-                                        properties:
+                                      - properties:
                                           intValue:
                                             type: integer
                               droppedAttributesCount:
                                 type: integer
-                                required: false
                               droppedEventsCount:
                                 type: integer
-                                required: false
                               droppedLinksCount:
                                 type: integer
-                                required: false
                               endTimeUnixNano:
                                 type: integer
-                                required: false
                               events:
                                 type: array
                                 items:
                                   $ref: '#/components/schemas/SpanEvent'
                               kind:
                                 type: integer
-                                required: true
                                 enum:
                                   - 1
                               links:
@@ -387,27 +333,19 @@ components:
                                     type: string
                               name:
                                 type: string
-                                required: true
                               parentSpanId:
                                 type: string
-                                required: false
                               spanId:
                                 type: string
-                                required: true
                               startTimeUnixNano:
                                 type: integer
-                                required: true
                               status:
                                 type: object
-                                required: true
                                 properties:
                                   code:
                                     type: integer
-                                    required: true
                                   message:
                                     type: string
-                                    required: false
                               traceId:
                                 type: string
-                                required: true
 
