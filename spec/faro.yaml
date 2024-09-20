@@ -1,10 +1,22 @@
 openapi: '3.1.0'
 info:
-  title: Faro Collector API
+  title: Faro API
+  description: The Faro API accepts payloads from the Faro SDKs.
   version: 1.0.0
+  license: 
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+servers:
+  - url: /collect/{appKey}
+    description: Faro Collector API
+    variables:
+      appKey:
+        default: 'default'
+        description: The application key is provided by your endpoint provider.
 paths:
   /collect/{appKey}:
     post:
+      operationId: submitPayload
       parameters:
         - name: appKey
           description: |
@@ -23,13 +35,21 @@ paths:
       summary: Submit a Faro payload
       responses:
         default:
-          description: Unexpected error
+          description: OK
+        '202':
+          description: OK
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Exception'
-        '202':
-          description: OK
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exception'
 components:
   schemas:
     Event:
@@ -120,7 +140,6 @@ components:
       properties:
         values:
           type: object
-          json: omitempty
           additionalProperties:
             type: number
         type:
@@ -302,7 +321,7 @@ components:
                                     type: string
                                   value:
                                     type: object
-                                    oneof:
+                                    oneOf:
                                       - properties:
                                           stringValue:
                                             type: string
