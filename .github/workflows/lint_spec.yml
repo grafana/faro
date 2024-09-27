@@ -13,4 +13,4 @@ jobs:
       - name: Lint spec
         uses: mhiew/redoc-lint-github-action@v3
         with:
-          args: 'spec/faro.yaml'
+          args: 'spec/gen/faro.gen.yaml'
