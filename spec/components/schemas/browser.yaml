@@ -1,0 +1,19 @@
+components:
+  schemas:
+    Browser:
+      type: object
+      description: holds metadata about a client's browser.
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        os:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        mobile:
+          type: boolean
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

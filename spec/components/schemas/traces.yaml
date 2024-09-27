@@ -1,0 +1,8 @@
+components:
+  schemas:
+    Traces:
+      description: otel traces model.
+      x-go-type: "ptrace.Traces"
+      x-go-type-import:
+        name: "ptrace"
+        path: "go.opentelemetry.io/collector/pdata/ptrace"

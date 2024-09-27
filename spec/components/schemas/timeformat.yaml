@@ -1,0 +1,8 @@
+components:
+  schemas:
+    TimeFormat:
+      type: string
+      enum:
+        - "2006-01-02T15:04:05.999Z"
+      x-enum-varnames:
+        - "RFC3339Milli"

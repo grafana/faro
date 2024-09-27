@@ -1,0 +1,8 @@
+package: faro
+output: build/go/gen/faro.gen.go
+generate:
+  models: true
+compatibility:
+  always-prefix-enum-values: true
+output-options:
+  skip-prune: true

@@ -1,0 +1,21 @@
+components:
+  schemas:
+    Log:
+      type: object
+      description: controls the data that come into a Log message.
+      required:
+        - timestamp
+      properties:
+        context:
+          $ref: '#/components/schemas/LogContext'
+        level:
+          $ref: '#/components/schemas/LogLevel'
+          x-go-name: LogLevel
+        message:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        timestamp:
+          type: string
+          format: date-time
+        trace:
+          $ref: '#/components/schemas/TraceContext'

@@ -1,0 +1,8 @@
+components:
+  schemas:
+    LogContext:
+      type: object
+      description: is a string to string map structure that represents the context of a log message.
+      additionalProperties:
+        type: string
+      x-go-type-skip-optional-pointer: true

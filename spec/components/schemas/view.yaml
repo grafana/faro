@@ -1,0 +1,10 @@
+components:
+  schemas:
+    View:
+      type: object
+      description: holds metadata about a view.
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

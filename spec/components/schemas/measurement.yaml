@@ -1,0 +1,24 @@
+components:
+  schemas:
+    Measurement:
+      type: object
+      description: holds the data for user provided measurements.
+      properties:
+        context:
+          $ref: '#/components/schemas/MeasurementContext'
+        timestamp:
+          type: string
+          format: date-time
+          x-go-type-skip-optional-pointer: true
+        trace:
+          $ref: '#/components/schemas/TraceContext'
+        type:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        values:
+          type: object
+          additionalProperties:
+            type: number
+            format: double
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

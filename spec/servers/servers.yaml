@@ -1,0 +1,7 @@
+servers:
+  - url: /collect/{appKey}
+    description: Faro Collector API
+    variables:
+      appKey:
+        default: 'default'
+        description: The application key is provided by your endpoint provider.

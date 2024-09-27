@@ -1,0 +1,440 @@
+# Code auto-generated. DO NOT EDIT.
+openapi: 3.0.0
+info:
+  title: Faro API
+  description: The Faro API accepts payloads from the Faro SDKs.
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: /collect/{appKey}
+    description: Faro Collector API
+    variables:
+      appKey:
+        default: default
+        description: The application key is provided by your endpoint provider.
+paths:
+  /collect/{appKey}:
+    post:
+      operationId: submitPayload
+      parameters:
+        - name: appKey
+          description: 'The application key is provided by your endpoint provider.
+
+            '
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payload'
+      summary: Submit a Faro payload
+      responses:
+        default:
+          description: OK
+        '202':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exception'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exception'
+components:
+  schemas:
+    MeasurementContext:
+      type: object
+      additionalProperties:
+        type: string
+      x-go-type-skip-optional-pointer: true
+    Session:
+      type: object
+      description: holds metadata about the browser session the event originates from.
+      properties:
+        id:
+          type: string
+          x-go-type-skip-optional-pointer: true
+          x-go-name: ID
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+    Stacktrace:
+      type: object
+      description: is a collection of Frames.
+      properties:
+        frames:
+          type: array
+          items:
+            $ref: '#/components/schemas/Frame'
+          minItems: 0
+          x-go-type-skip-optional-pointer: true
+    App:
+      type: object
+      description: holds metadata about the application event originates from.
+      properties:
+        bundleId:
+          type: string
+          x-go-type-skip-optional-pointer: true
+          x-go-name: BundleID
+        environment:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        namespace:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        release:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+    SDK:
+      type: object
+      description: holds metadata about the app agent that produced the event.
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        integrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SDKIntegration'
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+      x-go-name: SDK
+    TimeFormat:
+      type: string
+      enum:
+        - '2006-01-02T15:04:05.999Z'
+      x-enum-varnames:
+        - RFC3339Milli
+    K6:
+      type: object
+      description: holds metadata about whether or not the run happened in a K6 browser.
+      properties:
+        isK6Browser:
+          type: boolean
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+    Event:
+      type: object
+      description: holds RUM event data.
+      required:
+        - name
+      properties:
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-type-skip-optional-pointer: true
+        domain:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        name:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+          x-go-type-skip-optional-pointer: true
+        trace:
+          $ref: '#/components/schemas/TraceContext'
+    SpanEvent:
+      type: object
+      required:
+        - name
+      properties:
+        attributes:
+          type: array
+        droppedAttributesCount:
+          type: integer
+        name:
+          type: string
+        timeUnixNano:
+          type: string
+    Measurement:
+      type: object
+      description: holds the data for user provided measurements.
+      properties:
+        context:
+          $ref: '#/components/schemas/MeasurementContext'
+        timestamp:
+          type: string
+          format: date-time
+          x-go-type-skip-optional-pointer: true
+        trace:
+          $ref: '#/components/schemas/TraceContext'
+        type:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        values:
+          type: object
+          additionalProperties:
+            type: number
+            format: double
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+    View:
+      type: object
+      description: holds metadata about a view.
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+    Log:
+      type: object
+      description: controls the data that come into a Log message.
+      required:
+        - timestamp
+      properties:
+        context:
+          $ref: '#/components/schemas/LogContext'
+        level:
+          $ref: '#/components/schemas/LogLevel'
+          x-go-name: LogLevel
+        message:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        timestamp:
+          type: string
+          format: date-time
+        trace:
+          $ref: '#/components/schemas/TraceContext'
+    Kind:
+      type: string
+      enum:
+        - event
+        - exception
+        - log
+        - measurement
+        - unknown
+    Frame:
+      type: object
+      description: represents a single stacktrace frame.
+      properties:
+        colno:
+          type: integer
+          x-go-type-skip-optional-pointer: true
+        filename:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        function:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        lineno:
+          type: integer
+          x-go-type-skip-optional-pointer: true
+        module:
+          type: string
+          x-go-type-skip-optional-pointer: true
+    ExceptionContext:
+      type: object
+      additionalProperties:
+        type: string
+      x-go-type-skip-optional-pointer: true
+    LogLevel:
+      type: string
+      description: log level enum for incoming app logs.
+      enum:
+        - trace
+        - debug
+        - info
+        - warning
+        - error
+      x-go-type-skip-optional-pointer: true
+      x-go-name: LogLevel
+    User:
+      type: object
+      description: holds metadata about the user related to an app event.
+      properties:
+        username:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        id:
+          type: string
+          x-go-type-skip-optional-pointer: true
+          x-go-name: ID
+        email:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+    TraceContext:
+      description: holds trace id and span id associated to an entity (log, exception,
+        measurement...).
+      type: object
+      required:
+        - trace_id
+        - span_id
+      properties:
+        span_id:
+          type: string
+          x-go-name: SpanID
+          x-go-type-skip-optional-pointer: true
+          x-omitempty: false
+        trace_id:
+          type: string
+          x-go-name: TraceID
+          x-go-type-skip-optional-pointer: true
+          x-omitempty: false
+      x-go-type-skip-optional-pointer: true
+    Page:
+      type: object
+      description: holds metadata about the web page event originates from.
+      properties:
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-type-skip-optional-pointer: true
+        id:
+          type: string
+          x-go-type-skip-optional-pointer: true
+          x-go-name: ID
+        url:
+          type: string
+          x-go-type-skip-optional-pointer: true
+          x-go-name: URL
+      x-go-type-skip-optional-pointer: true
+    Browser:
+      type: object
+      description: holds metadata about a client's browser.
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        os:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        mobile:
+          type: boolean
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+    SDKIntegration:
+      type: object
+      description: holds metadata about a plugin/integration on the app agent that
+        collected and sent the event.
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true
+    Meta:
+      type: object
+      description: holds metadata about an app event.
+      properties:
+        sdk:
+          $ref: '#/components/schemas/SDK'
+          x-go-name: SDK
+        app:
+          $ref: '#/components/schemas/App'
+        user:
+          $ref: '#/components/schemas/User'
+        session:
+          $ref: '#/components/schemas/Session'
+        page:
+          $ref: '#/components/schemas/Page'
+        browser:
+          $ref: '#/components/schemas/Browser'
+        k6:
+          $ref: '#/components/schemas/K6'
+        view:
+          $ref: '#/components/schemas/View'
+      x-go-type-skip-optional-pointer: true
+    Exception:
+      description: holds all the data regarding an exception.
+      type: object
+      required:
+        - timestamp
+      properties:
+        context:
+          $ref: '#/components/schemas/ExceptionContext'
+        stacktrace:
+          $ref: '#/components/schemas/Stacktrace'
+        timestamp:
+          type: string
+          format: date-time
+        trace:
+          $ref: '#/components/schemas/TraceContext'
+          x-go-type-skip-optional-pointer: true
+        type:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        value:
+          type: string
+          x-go-type-skip-optional-pointer: true
+    LogContext:
+      type: object
+      description: is a string to string map structure that represents the context
+        of a log message.
+      additionalProperties:
+        type: string
+      x-go-type-skip-optional-pointer: true
+    Payload:
+      type: object
+      description: is the body of the receiver request.
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+          minItems: 0
+          x-go-type-skip-optional-pointer: true
+        exceptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exception'
+          minItems: 0
+          x-go-type-skip-optional-pointer: true
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Log'
+          minItems: 0
+          x-go-type-skip-optional-pointer: true
+        measurements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Measurement'
+          x-go-type-skip-optional-pointer: true
+        meta:
+          $ref: '#/components/schemas/Meta'
+        traces:
+          $ref: '#/components/schemas/Traces'
+    Traces:
+      description: otel traces model.
+      x-go-type: ptrace.Traces
+      x-go-type-import:
+        name: ptrace
+        path: go.opentelemetry.io/collector/pdata/ptrace

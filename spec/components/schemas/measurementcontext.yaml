@@ -1,0 +1,7 @@
+components:
+  schemas:
+    MeasurementContext:
+      type: object
+      additionalProperties:
+        type: string
+      x-go-type-skip-optional-pointer: true

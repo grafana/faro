@@ -1,0 +1,10 @@
+components:
+  schemas:
+    K6:
+      type: object
+      description: holds metadata about whether or not the run happened in a K6 browser.
+      properties:
+        isK6Browser:
+          type: boolean
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
