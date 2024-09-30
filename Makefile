@@ -7,11 +7,15 @@ build-all: build-go build-ts
 clean-go:
 	rm -rf $(buildDir)/go/*
 build-go:  clean-go
-	docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
+	docker run --rm \
+    -e GO_POST_PROCESS_FILE="/usr/local/bin/gofmt -w" \
+    -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
     -i /local/$(spec) \
     -c /local/spec/go-config.yaml \
     -g go \
-    -o /local/$(buildDir)/go
+    -o /local/$(buildDir)/go \
+    --import-mappings=ptrace.Traces=go.opentelemetry.io/collector/pdata/ptrace \
+    --type-mappings=object+Traces=ptrace.Traces
 	cd build/go && go mod tidy && cd ../..
 build-ts:  clean-ts
 	docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli generate \

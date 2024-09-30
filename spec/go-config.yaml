@@ -1,3 +1,4 @@
 gitRepoId: faro
 gitUserId: grafana
 packageName: faro
+enablePostProcessFile: true

@@ -1,9 +1,10 @@
+---
 openapi: '3.1.0'
 info:
   title: Faro API
   description: The Faro API accepts payloads from the Faro SDKs.
   version: 1.0.0
-  license: 
+  license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
 servers:
@@ -62,7 +63,7 @@ components:
           type: string
         attributes:
           type: object
-          
+
           additionalProperties:
             type: string
         timestamp:
@@ -116,14 +117,14 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StackFrame'
-          
+
           minItems: 0
         timestamp:
           type: string
           format: date-time
         trace:
           type: object
-          
+
           properties:
             trace_id:
               type: string
@@ -131,7 +132,7 @@ components:
               type: string
         context:
           type: object
-          
+
           additionalProperties:
             type: string
     Measurement:
@@ -273,98 +274,5 @@ components:
                   type: string
         traces:
           type: object
-          properties:
-            resourceSpans:
-              type: array
-              items:
-                type: object
-                required: [resource, instrumentationLibrarySpans]
-                properties:
-                  resource:
-                    type: object
-                    properties:
-                      attributes:
-                        type: object
-                        required: [key, value]
-                        properties:
-                          key:
-                            type: string
-                          value:
-                            type: object
-                            additionalProperties:
-                              type: string
-                  instrumentationLibrarySpans:
-                    type: array
-                    items:
-                      type: object
-                      required: [instrumentationLibrary]
-                      properties:
-                        instrumentationLibrary:
-                          type: object
-                          required: [name, version]
-                          properties:
-                            name:
-                              type: string
-                            version:
-                              type: string
-                        spans:
-                          type: array
-                          items:
-                            type: object
-                            required: [kind, name, spanId, startTimeUnixNano, endTimeUnixNano, status, traceId]
-                            properties:
-                              attributes:
-                                type: object
-                                required: [key, value]
-                                properties:
-                                  key:
-                                    type: string
-                                  value:
-                                    type: object
-                                    oneOf:
-                                      - properties:
-                                          stringValue:
-                                            type: string
-                                      - properties:
-                                          intValue:
-                                            type: integer
-                              droppedAttributesCount:
-                                type: integer
-                              droppedEventsCount:
-                                type: integer
-                              droppedLinksCount:
-                                type: integer
-                              endTimeUnixNano:
-                                type: integer
-                              events:
-                                type: array
-                                items:
-                                  $ref: '#/components/schemas/SpanEvent'
-                              kind:
-                                type: integer
-                                enum:
-                                  - 1
-                              links:
-                                type: array
-                                items:
-                                  type: object
-                                  additionalProperties:
-                                    type: string
-                              name:
-                                type: string
-                              parentSpanId:
-                                type: string
-                              spanId:
-                                type: string
-                              startTimeUnixNano:
-                                type: integer
-                              status:
-                                type: object
-                                properties:
-                                  code:
-                                    type: integer
-                                  message:
-                                    type: string
-                              traceId:
-                                type: string
+          format: Traces
 
