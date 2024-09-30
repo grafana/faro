@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **Exceptions** | Pointer to [**[]Exception**](Exception.md) |  | [optional] 
 **Measurements** | Pointer to [**[]Measurement**](Measurement.md) |  | [optional] 
 **Meta** | [**PayloadMeta**](PayloadMeta.md) |  | 
-**Traces** | Pointer to [**PayloadTraces**](PayloadTraces.md) |  | [optional] 
+**Traces** | Pointer to [**ptrace.Traces**](ptrace.Traces.md) |  | [optional] 
 
 ## Methods
 
@@ -152,20 +152,20 @@ SetMeta sets Meta field to given value.
 
 ### GetTraces
 
-`func (o *Payload) GetTraces() PayloadTraces`
+`func (o *Payload) GetTraces() ptrace.Traces`
 
 GetTraces returns the Traces field if non-nil, zero value otherwise.
 
 ### GetTracesOk
 
-`func (o *Payload) GetTracesOk() (*PayloadTraces, bool)`
+`func (o *Payload) GetTracesOk() (*ptrace.Traces, bool)`
 
 GetTracesOk returns a tuple with the Traces field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetTraces
 
-`func (o *Payload) SetTraces(v PayloadTraces)`
+`func (o *Payload) SetTraces(v ptrace.Traces)`
 
 SetTraces sets Traces field to given value.
 

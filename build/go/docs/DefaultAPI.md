@@ -1,16 +1,16 @@
 # \DefaultAPI
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *http://localhost/collect/default*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**CollectAppKeyPost**](DefaultAPI.md#CollectAppKeyPost) | **Post** /collect/{appKey} | Submit a Faro payload
+[**SubmitPayload**](DefaultAPI.md#SubmitPayload) | **Post** /collect/{appKey} | Submit a Faro payload
 
 
 
-## CollectAppKeyPost
+## SubmitPayload
 
-> CollectAppKeyPost(ctx, appKey).Payload(payload).Execute()
+> SubmitPayload(ctx, appKey).Payload(payload).Execute()
 
 Submit a Faro payload
 
@@ -32,9 +32,9 @@ func main() {
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	r, err := apiClient.DefaultAPI.CollectAppKeyPost(context.Background(), appKey).Payload(payload).Execute()
+	r, err := apiClient.DefaultAPI.SubmitPayload(context.Background(), appKey).Payload(payload).Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.CollectAppKeyPost``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.SubmitPayload``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
 }
@@ -50,7 +50,7 @@ Name | Type | Description  | Notes
 
 ### Other Parameters
 
-Other parameters are passed through a pointer to a apiCollectAppKeyPostRequest struct via the builder pattern
+Other parameters are passed through a pointer to a apiSubmitPayloadRequest struct via the builder pattern
 
 
 Name | Type | Description  | Notes

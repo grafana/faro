@@ -1,5 +1,5 @@
 /*
-Faro Collector API
+Faro API
 
 Testing DefaultAPIService
 
@@ -11,10 +11,10 @@ package faro
 
 import (
 	"context"
+	openapiclient "github.com/grafana/faro"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
-	openapiclient "github.com/grafana/faro"
 )
 
 func Test_faro_DefaultAPIService(t *testing.T) {
@@ -22,13 +22,13 @@ func Test_faro_DefaultAPIService(t *testing.T) {
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
 
-	t.Run("Test DefaultAPIService CollectAppKeyPost", func(t *testing.T) {
+	t.Run("Test DefaultAPIService SubmitPayload", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var appKey string
 
-		httpRes, err := apiClient.DefaultAPI.CollectAppKeyPost(context.Background(), appKey).Execute()
+		httpRes, err := apiClient.DefaultAPI.SubmitPayload(context.Background(), appKey).Execute()
 
 		require.Nil(t, err)
 		assert.Equal(t, 200, httpRes.StatusCode)
