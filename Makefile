@@ -23,6 +23,19 @@ clean-go:
 install-go-dependencies:
 	go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
 
+build-go-openapi-generator-cli: merge-specs
+	docker run --rm \
+    -e GO_POST_PROCESS_FILE="/usr/local/bin/gofmt -w" \
+    -v "${PWD}:/local" openapitools/openapi-generator-cli generate \
+    -i /local/$(genSpec) \
+    -c /local/$(goConfig) \
+    -g go \
+    -o /local/$(buildDir)/go2 \
+	--skip-validate-spec \
+    --import-mappings=ptrace.Traces=go.opentelemetry.io/collector/pdata/ptrace \
+    --type-mappings=object+Traces=ptrace.Traces
+	cd build/go && go mod tidy && cd ../..
+
 build-go: merge-specs clean-go
 	@echo "Building go generated file: $(genGo)"
 	@oapi-codegen --config $(goConfig) $(genSpec)

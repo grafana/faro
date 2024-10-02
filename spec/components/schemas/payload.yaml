@@ -29,5 +29,6 @@ components:
           x-go-type-skip-optional-pointer: true
         meta:
           $ref: '#/components/schemas/Meta'
+          free-form: true
         traces:
           $ref: '#/components/schemas/Traces'
