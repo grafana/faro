@@ -12,9 +12,7 @@ components:
         id:
           type: string
           x-go-type-skip-optional-pointer: true
-          x-go-name: ID
         url:
           type: string
           x-go-type-skip-optional-pointer: true
-          x-go-name: URL
       x-go-type-skip-optional-pointer: true

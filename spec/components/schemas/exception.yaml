@@ -8,6 +8,7 @@ components:
       properties:
         context:
           $ref: '#/components/schemas/ExceptionContext'
+          x-go-type-skip-optional-pointer: true
         stacktrace:
           $ref: '#/components/schemas/Stacktrace'
         timestamp:

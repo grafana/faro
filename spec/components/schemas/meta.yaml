@@ -6,7 +6,6 @@ components:
         properties:
           sdk:
             $ref: '#/components/schemas/SDK'
-            x-go-name: SDK
           app:
             $ref: '#/components/schemas/App'
           user:
@@ -21,4 +20,6 @@ components:
             $ref: '#/components/schemas/K6'
           view:
             $ref: '#/components/schemas/View'
+          geo:
+            $ref: '#/components/schemas/Geo'
         x-go-type-skip-optional-pointer: true

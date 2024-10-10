@@ -30,5 +30,6 @@ components:
         meta:
           $ref: '#/components/schemas/Meta'
           free-form: true
+          x-go-type-skip-optional-pointer: true
         traces:
           $ref: '#/components/schemas/Traces'

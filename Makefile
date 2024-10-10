@@ -9,7 +9,7 @@ genGo = $(buildDir)/go/gen/faro.gen.go
 
 
 serve:
-	docker run -p 80:8080 -e SWAGGER_JSON=/src/openapi.yaml -v ./\:/src swaggerapi/swagger-ui
+	docker run -p 80:8080 -e SWAGGER_JSON=/src/faro.gen.yaml -v ./spec/gen/\:/src swaggerapi/swagger-ui
 
 install-dependencies: install-go-dependencies
 

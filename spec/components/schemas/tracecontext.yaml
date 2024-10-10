@@ -9,12 +9,10 @@ components:
       properties:
         span_id:
           type: string
-          x-go-name: SpanID
           x-go-type-skip-optional-pointer: true
           x-omitempty: false
         trace_id:
           type: string
-          x-go-name: TraceID
           x-go-type-skip-optional-pointer: true
           x-omitempty: false
       x-go-type-skip-optional-pointer: true

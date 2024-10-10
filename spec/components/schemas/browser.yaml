@@ -13,6 +13,7 @@ components:
         os:
           type: string
           x-go-type-skip-optional-pointer: true
+          x-go-name: OS
         mobile:
           type: boolean
           x-go-type-skip-optional-pointer: true

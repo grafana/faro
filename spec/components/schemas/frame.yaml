@@ -19,3 +19,4 @@ components:
         module:
           type: string
           x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

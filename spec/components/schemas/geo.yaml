@@ -1,25 +1,33 @@
 components:
   schemas:
-    App:
+    Geo:
       type: object
-      description: holds metadata about the application event originates from.
+      description: holds metadata about a client's geo.
       properties:
-        bundleId:
+        continent_iso:
           type: string
           x-go-type-skip-optional-pointer: true
-        environment:
+          x-go-name: ContinentISOCode
+        continent:
           type: string
           x-go-type-skip-optional-pointer: true
-        name:
+        country_iso:
           type: string
           x-go-type-skip-optional-pointer: true
-        namespace:
+          x-go-name: CountryISOCode
+        country:
           type: string
           x-go-type-skip-optional-pointer: true
-        release:
+        province:
           type: string
           x-go-type-skip-optional-pointer: true
-        version:
+        city:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        connection_type:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        carrier:
           type: string
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

@@ -7,7 +7,6 @@ components:
         id:
           type: string
           x-go-type-skip-optional-pointer: true
-          x-go-name: ID
         attributes:
           type: object
           additionalProperties:

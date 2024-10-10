@@ -10,4 +10,3 @@ components:
         version:
           type: string
           x-go-type-skip-optional-pointer: true
-        
