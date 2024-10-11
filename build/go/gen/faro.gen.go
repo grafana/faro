@@ -112,8 +112,8 @@ type Log struct {
 	// Context is a string to string map structure that represents the context of a log message.
 	Context LogContext `json:"context,omitempty"`
 
-	// Level log level enum for incoming app logs.
-	Level     LogLevel  `json:"level,omitempty"`
+	// LogLevel log level enum for incoming app logs.
+	LogLevel  LogLevel  `json:"level,omitempty"`
 	Message   string    `json:"message,omitempty"`
 	Timestamp time.Time `json:"timestamp"`
 

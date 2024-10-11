@@ -265,6 +265,7 @@ components:
         - warning
         - error
       x-go-type-skip-optional-pointer: true
+      x-go-name: LogLevel
     User:
       type: object
       description: holds metadata about the user related to an app event.
