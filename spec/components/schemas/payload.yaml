@@ -32,4 +32,5 @@ components:
           free-form: true
           x-go-type-skip-optional-pointer: true
         traces:
+          type: object
           $ref: '#/components/schemas/Traces'

@@ -432,6 +432,7 @@ components:
           free-form: true
           x-go-type-skip-optional-pointer: true
         traces:
+          type: object
           $ref: '#/components/schemas/Traces'
     Geo:
       type: object
@@ -465,6 +466,7 @@ components:
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
     Traces:
+      type: object
       description: otel traces model.
       x-go-type: ptrace.Traces
       x-go-type-import:

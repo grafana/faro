@@ -1,6 +1,7 @@
 components:
   schemas:
     Traces:
+      type: object
       description: otel traces model.
       x-go-type: "ptrace.Traces"
       x-go-type-import:
