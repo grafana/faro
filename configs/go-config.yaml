@@ -1,5 +1,5 @@
 package: faro
-output: build/go/faro.gen.go
+output: pkg/go/faro.gen.go
 generate:
   models: true
 compatibility:

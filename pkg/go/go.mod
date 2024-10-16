@@ -1,4 +1,4 @@
-module github.com/grafana/faro
+module github.com/grafana/faro/pkg/go
 
 go 1.22.3
 
