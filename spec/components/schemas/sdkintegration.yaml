@@ -1,0 +1,12 @@
+components:
+  schemas:
+    SDKIntegration:
+      type: object
+      description: holds metadata about a plugin/integration on the app agent that collected and sent the event.
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true

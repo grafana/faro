@@ -1,0 +1,16 @@
+name: Lint Spec
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Lint spec
+        uses: mhiew/redoc-lint-github-action@v3
+        with:
+          args: 'spec/gen/faro.gen.yaml'

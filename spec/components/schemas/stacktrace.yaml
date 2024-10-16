@@ -1,0 +1,12 @@
+components:
+  schemas:
+    Stacktrace:
+      type: object
+      description: is a collection of Frames.
+      properties:
+        frames:
+          type: array
+          items:
+            $ref: '#/components/schemas/Frame'
+          minItems: 0
+          x-go-type-skip-optional-pointer: true

@@ -1,0 +1,10 @@
+components:
+  schemas:
+    Kind:
+      type: string
+      enum:
+        - event
+        - exception
+        - log
+        - measurement
+        - unknown

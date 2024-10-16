@@ -1,0 +1,13 @@
+components:
+  schemas:
+    LogLevel:
+      type: string
+      description: log level enum for incoming app logs.
+      enum:
+        - trace
+        - debug
+        - info
+        - warning
+        - error
+      x-go-type-skip-optional-pointer: true
+      x-go-name: LogLevel

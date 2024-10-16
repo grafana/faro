@@ -1,0 +1,24 @@
+components:
+  schemas:
+    Event:
+      type: object
+      description: holds RUM event data.
+      required:
+        - name
+      properties:
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-type-skip-optional-pointer: true
+        domain:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        name:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+          x-go-type-skip-optional-pointer: true
+        trace:
+          $ref: '#/components/schemas/TraceContext'

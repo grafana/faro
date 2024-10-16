@@ -1,0 +1,36 @@
+components:
+  schemas:
+    Payload:
+      type: object
+      description: is the body of the receiver request.
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+          minItems: 0
+          x-go-type-skip-optional-pointer: true
+        exceptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exception'
+          minItems: 0
+          x-go-type-skip-optional-pointer: true
+        logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Log'
+          minItems: 0
+          x-go-type-skip-optional-pointer: true
+        measurements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Measurement'
+          x-go-type-skip-optional-pointer: true
+        meta:
+          $ref: '#/components/schemas/Meta'
+          free-form: true
+          x-go-type-skip-optional-pointer: true
+        traces:
+          type: object
+          $ref: '#/components/schemas/Traces'

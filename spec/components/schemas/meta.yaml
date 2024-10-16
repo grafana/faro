@@ -1,0 +1,25 @@
+components:
+  schemas:
+    Meta:
+        type: object
+        description: holds metadata about an app event.
+        properties:
+          sdk:
+            $ref: '#/components/schemas/SDK'
+          app:
+            $ref: '#/components/schemas/App'
+          user:
+            $ref: '#/components/schemas/User'
+          session:
+            $ref: '#/components/schemas/Session'
+          page:
+            $ref: '#/components/schemas/Page'
+          browser:
+            $ref: '#/components/schemas/Browser'
+          k6:
+            $ref: '#/components/schemas/K6'
+          view:
+            $ref: '#/components/schemas/View'
+          geo:
+            $ref: '#/components/schemas/Geo'
+        x-go-type-skip-optional-pointer: true

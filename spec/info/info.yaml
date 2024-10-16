@@ -1,0 +1,7 @@
+info:
+  title: Faro API
+  description: The Faro API accepts payloads from the Faro SDKs.
+  version: 1.0.0
+  license: 
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'

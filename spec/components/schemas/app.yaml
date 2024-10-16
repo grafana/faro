@@ -1,0 +1,25 @@
+components:
+  schemas:
+    App:
+      type: object
+      description: holds metadata about the application event originates from.
+      properties:
+        bundleId:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        environment:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        namespace:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        release:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

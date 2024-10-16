@@ -1,0 +1,19 @@
+components:
+  schemas:
+    SDK:
+      type: object
+      description: holds metadata about the app agent that produced the event.
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        integrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SDKIntegration'
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+      x-go-name: SDK

@@ -1,0 +1,18 @@
+components:
+  schemas:
+    Page:
+      type: object
+      description: holds metadata about the web page event originates from.
+      properties:
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-type-skip-optional-pointer: true
+        id:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        url:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

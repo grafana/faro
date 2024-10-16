@@ -1,0 +1,21 @@
+components:
+  schemas:
+    User:
+      type: object
+      description: holds metadata about the user related to an app event.
+      properties:
+        username:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        id:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        email:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

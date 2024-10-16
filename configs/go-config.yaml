@@ -1,0 +1,9 @@
+package: faro
+output: build/go/faro.gen.go
+generate:
+  models: true
+compatibility:
+  always-prefix-enum-values: true
+output-options:
+  skip-prune: true
+  name-normalizer: ToCamelCaseWithInitialisms

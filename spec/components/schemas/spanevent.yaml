@@ -1,0 +1,15 @@
+components:
+  schemas:
+    SpanEvent:
+      type: object
+      required:
+        - name
+      properties:
+        attributes:
+          type: array
+        droppedAttributesCount:
+          type: integer
+        name:
+          type: string
+        timeUnixNano:
+          type: string

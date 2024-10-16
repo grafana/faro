@@ -1,0 +1,22 @@
+components:
+  schemas:
+    Frame:
+      type: object
+      description: represents a single stacktrace frame.
+      properties:
+        colno:
+          type: integer
+          x-go-type-skip-optional-pointer: true
+        filename:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        function:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        lineno:
+          type: integer
+          x-go-type-skip-optional-pointer: true
+        module:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

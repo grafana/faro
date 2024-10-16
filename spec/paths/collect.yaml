@@ -1,0 +1,37 @@
+paths:
+  /collect/{appKey}:
+    post:
+      operationId: submitPayload
+      parameters:
+        - name: appKey
+          description: |
+            The application key is provided by your endpoint provider.
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payload'
+      summary: Submit a Faro payload
+      responses:
+        default:
+          description: OK
+        '202':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exception'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exception'
