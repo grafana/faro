@@ -1,4 +1,4 @@
-buildDir = build
+buildDir = pkg
 specDir = spec
 
 goConfig = configs/go-config.yaml
@@ -28,8 +28,8 @@ build-go: merge-specs clean-go
 	@oapi-codegen --config $(goConfig) $(genSpec)
 	@echo "Post processing go generated file: $(genGo)"
 	@./scripts/go_post_process.sh $(genGo)
-	@echo "Running go mod tidy in build/go"
-	@cd build/go && go mod tidy && cd ../..
+	@echo "Running go mod tidy in $(buildDir)/go"
+	@cd $(buildDir)/go && go mod tidy && cd ../..
 	@echo "Done"
 
 # TODO finalize ts types generation and uncomment this part
