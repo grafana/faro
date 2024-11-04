@@ -49,8 +49,9 @@ In case a member leaves, the [offboarding](#offboarding) procedure is applied.
 
 The current team members are:
 
-- Bogdan Matei — [@bfmatei](https://github.com/bfmatei) ([Grafana Labs](https://grafana.com/))
-- Domas Lapinskas - [@domasx2](https://github.com/domasx2) ([Grafana Labs](https://grafana.com/))
+- Tomas Pica - [@t00mas](https://github.com/t00mas) ([Grafana Labs](https://grafana.com/))
+- Irina Marchuk - [@mar4uk](https://github.com/mar4uk) ([Grafana Labs](https://grafana.com/)) 
+- Robert Lankford - [@rlankfo](https://github.com/rlankfo) ([Grafana Labs](https://grafana.com/))
 
 ### Maintainers
 
