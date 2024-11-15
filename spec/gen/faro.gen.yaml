@@ -105,6 +105,10 @@ components:
           type: string
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
+    BrandsString:
+      type: string
+      description: represents brands as a string.
+      x-go-type-skip-optional-pointer: true
     SDK:
       type: object
       description: holds metadata about the app agent that produced the event.
@@ -122,6 +126,17 @@ components:
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
       x-go-name: SDK
+    Brand:
+      type: object
+      description: represents a single browser brand.
+      properties:
+        brand:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
     TimeFormat:
       type: string
       enum:
@@ -335,6 +350,23 @@ components:
         mobile:
           type: boolean
           x-go-type-skip-optional-pointer: true
+        userAgent:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        language:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        brands:
+          oneOf:
+            - $ref: '#/components/schemas/BrandsString'
+            - $ref: '#/components/schemas/BrandsArray'
+          x-go-type-skip-optional-pointer: true
+        viewportWidth:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        viewportHeight:
+          type: string
+          x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
     SDKIntegration:
       type: object
@@ -370,6 +402,10 @@ components:
         geo:
           $ref: '#/components/schemas/Geo'
       x-go-type-skip-optional-pointer: true
+    BrandsArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Brand'
     Exception:
       description: holds all the data regarding an exception.
       type: object
