@@ -17,4 +17,21 @@ components:
         mobile:
           type: boolean
           x-go-type-skip-optional-pointer: true
+        userAgent:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        language:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        brands:
+          oneOf:
+            - $ref: '#/components/schemas/BrandsString'
+            - $ref: '#/components/schemas/BrandsArray'
+          x-go-type-skip-optional-pointer: true
+        viewportWidth:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        viewportHeight:
+          type: string
+          x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

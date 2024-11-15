@@ -1,0 +1,13 @@
+components:
+  schemas:
+    Brand:
+      type: object
+      description: represents a single browser brand.
+      properties:
+        brand:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

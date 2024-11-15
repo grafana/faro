@@ -4,8 +4,10 @@
 package faro
 
 import (
+	"encoding/json"
 	"time"
 
+	"github.com/oapi-codegen/runtime"
 	ptrace "go.opentelemetry.io/collector/pdata/ptrace"
 )
 
@@ -42,12 +44,34 @@ type App struct {
 	Version     string `json:"version,omitempty"`
 }
 
+// Brand represents a single browser brand.
+type Brand struct {
+	Brand   string `json:"brand,omitempty"`
+	Version string `json:"version,omitempty"`
+}
+
+// BrandsArray defines model for BrandsArray.
+type BrandsArray = []Brand
+
+// BrandsString represents brands as a string.
+type BrandsString = string
+
 // Browser holds metadata about a client's browser.
 type Browser struct {
-	Mobile  bool   `json:"mobile,omitempty"`
-	Name    string `json:"name,omitempty"`
-	OS      string `json:"os,omitempty"`
-	Version string `json:"version,omitempty"`
+	Brands         Browser_Brands `json:"brands,omitempty"`
+	Language       string         `json:"language,omitempty"`
+	Mobile         bool           `json:"mobile,omitempty"`
+	Name           string         `json:"name,omitempty"`
+	OS             string         `json:"os,omitempty"`
+	UserAgent      string         `json:"userAgent,omitempty"`
+	Version        string         `json:"version,omitempty"`
+	ViewportHeight string         `json:"viewportHeight,omitempty"`
+	ViewportWidth  string         `json:"viewportWidth,omitempty"`
+}
+
+// Browser_Brands defines model for Browser.Brands.
+type Browser_Brands struct {
+	union json.RawMessage
 }
 
 // Event holds RUM event data.
@@ -253,3 +277,65 @@ type View struct {
 
 // SubmitPayloadJSONRequestBody defines body for SubmitPayload for application/json ContentType.
 type SubmitPayloadJSONRequestBody = Payload
+
+// AsBrandsString returns the union data inside the Browser_Brands as a BrandsString
+func (t Browser_Brands) AsBrandsString() (BrandsString, error) {
+	var body BrandsString
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromBrandsString overwrites any union data inside the Browser_Brands as the provided BrandsString
+func (t *Browser_Brands) FromBrandsString(v BrandsString) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeBrandsString performs a merge with any union data inside the Browser_Brands, using the provided BrandsString
+func (t *Browser_Brands) MergeBrandsString(v BrandsString) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsBrandsArray returns the union data inside the Browser_Brands as a BrandsArray
+func (t Browser_Brands) AsBrandsArray() (BrandsArray, error) {
+	var body BrandsArray
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromBrandsArray overwrites any union data inside the Browser_Brands as the provided BrandsArray
+func (t *Browser_Brands) FromBrandsArray(v BrandsArray) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeBrandsArray performs a merge with any union data inside the Browser_Brands, using the provided BrandsArray
+func (t *Browser_Brands) MergeBrandsArray(v BrandsArray) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t Browser_Brands) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *Browser_Brands) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}

@@ -1,0 +1,6 @@
+components:
+  schemas:
+    BrandsArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/Brand'

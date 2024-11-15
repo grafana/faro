@@ -1,0 +1,6 @@
+components:
+  schemas:
+    BrandsString:
+      type: string
+      description: represents brands as a string.
+      x-go-type-skip-optional-pointer: true
