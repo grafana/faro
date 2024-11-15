@@ -153,5 +153,5 @@ If needed, we reserve the right to publicly announce removal.
 [devs]: https://github.com/grafana/faro/discussions/categories/development
 [maintainers]: https://github.com/grafana/faro/blob/master/MAINTAINERS.md
 [rough]: https://tools.ietf.org/html/rfc7282
-[team]: https://groups.google.com/g/faro-team
+[team]: https://groups.google.com/a/grafana.com/g/faro-team
 [users]: https://github.com/grafana/faro/discussions
