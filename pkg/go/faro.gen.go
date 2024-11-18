@@ -116,11 +116,9 @@ type Geo struct {
 	Carrier          string `json:"carrier,omitempty"`
 	City             string `json:"city,omitempty"`
 	ConnectionType   string `json:"connection_type,omitempty"`
-	Continent        string `json:"continent,omitempty"`
 	ContinentISOCode string `json:"continent_iso,omitempty"`
-	Country          string `json:"country,omitempty"`
 	CountryISOCode   string `json:"country_iso,omitempty"`
-	Province         string `json:"province,omitempty"`
+	SubdivisionISO   string `json:"subdivision_iso,omitempty"`
 }
 
 // K6 holds metadata about whether or not the run happened in a K6 browser.
