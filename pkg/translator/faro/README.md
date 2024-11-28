@@ -1,0 +1,1 @@
+placeholder translator package - will be replaced by actual translator later
