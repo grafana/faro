@@ -178,12 +178,12 @@ func TestTranslateLogsToFaroPayload(t *testing.T) {
 	}
 }
 
-func Test_extractBrowserBrandsFromKeyVal1(t *testing.T) {
+func Test_extractBrowserBrandsFromKeyVal(t *testing.T) {
 	tests := []struct {
 		name       string
 		kv         map[string]string
 		wantErr    assert.ErrorAssertionFunc
-		wantBrands *faroTypes.Browser_Brands
+		wantBrands faroTypes.Browser_Brands
 	}{
 		{
 			name: "brands as string",
@@ -191,11 +191,11 @@ func Test_extractBrowserBrandsFromKeyVal1(t *testing.T) {
 				"browser_brands": "Chromium;Google Inc.;",
 			},
 			wantErr: assert.NoError,
-			wantBrands: func(t *testing.T) *faroTypes.Browser_Brands {
+			wantBrands: func(t *testing.T) faroTypes.Browser_Brands {
 				var brands faroTypes.Browser_Brands
 				err := brands.FromBrandsString("Chromium;Google Inc.;")
 				require.NoError(t, err)
-				return &brands
+				return brands
 			}(t),
 		},
 		{
@@ -207,7 +207,7 @@ func Test_extractBrowserBrandsFromKeyVal1(t *testing.T) {
 				"browser_brand_1_version": "0.2.0",
 			},
 			wantErr: assert.NoError,
-			wantBrands: func(t *testing.T) *faroTypes.Browser_Brands {
+			wantBrands: func(t *testing.T) faroTypes.Browser_Brands {
 				var brands faroTypes.Browser_Brands
 				err := brands.FromBrandsArray(faroTypes.BrandsArray{
 					{
@@ -220,16 +220,16 @@ func Test_extractBrowserBrandsFromKeyVal1(t *testing.T) {
 					},
 				})
 				require.NoError(t, err)
-				return &brands
+				return brands
 			}(t),
 		},
 		{
 			name:    "brands are missing",
 			kv:      map[string]string{},
 			wantErr: assert.NoError,
-			wantBrands: func(t *testing.T) *faroTypes.Browser_Brands {
+			wantBrands: func(t *testing.T) faroTypes.Browser_Brands {
 				var brands faroTypes.Browser_Brands
-				return &brands
+				return brands
 			}(t),
 		},
 	}
@@ -238,6 +238,59 @@ func Test_extractBrowserBrandsFromKeyVal1(t *testing.T) {
 			brands, err := extractBrowserBrandsFromKeyVal(tt.kv)
 			tt.wantErr(t, err, fmt.Sprintf("extractBrowserBrandsFromKeyVal(%v)", tt.kv))
 			assert.Equal(t, tt.wantBrands, brands)
+		})
+	}
+}
+
+func Test_extractK6FromKeyVal(t *testing.T) {
+	testcases := []struct {
+		name    string
+		kv      map[string]string
+		want    faroTypes.K6
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name:    "k6_isK6Browser is missing in kv",
+			kv:      map[string]string{},
+			want:    faroTypes.K6{},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "k6_isK6Browser can't be parsed as boolean",
+			kv: map[string]string{
+				"k6_isK6Browser": "foo",
+			},
+			want:    faroTypes.K6{},
+			wantErr: assert.Error,
+		},
+		{
+			name: "k6_isK6Browser can be parsed as true",
+			kv: map[string]string{
+				"k6_isK6Browser": "true",
+			},
+			want: faroTypes.K6{
+				IsK6Browser: true,
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "k6_isK6Browser can be parsed as false",
+			kv: map[string]string{
+				"k6_isK6Browser": "0",
+			},
+			want: faroTypes.K6{
+				IsK6Browser: false,
+			},
+			wantErr: assert.NoError,
+		},
+	}
+	for _, tt := range testcases {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := extractK6FromKeyVal(tt.kv)
+			if !tt.wantErr(t, err, fmt.Sprintf("extractK6FromKeyVal(%v)", tt.kv)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "extractK6FromKeyVal(%v)", tt.kv)
 		})
 	}
 }

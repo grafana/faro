@@ -157,9 +157,9 @@ func convertLogKeyValToPayload(kv map[string]string, rl pcommon.Resource) (*faro
 		return nil, err
 	}
 
-	payload.Meta = *meta
+	payload.Meta = meta
 	payload.Logs = []faroTypes.Log{
-		*log,
+		log,
 	}
 
 	return &payload, nil
@@ -178,9 +178,9 @@ func convertEventKeyValsToPayload(kv map[string]string, rl pcommon.Resource) (*f
 		return nil, err
 	}
 
-	payload.Meta = *meta
+	payload.Meta = meta
 	payload.Events = []faroTypes.Event{
-		*event,
+		event,
 	}
 
 	return &payload, nil
@@ -196,9 +196,9 @@ func convertExceptionKeyValsToPayload(kv map[string]string, rl pcommon.Resource)
 	if err != nil {
 		return nil, err
 	}
-	payload.Meta = *meta
+	payload.Meta = meta
 	payload.Exceptions = []faroTypes.Exception{
-		*exception,
+		exception,
 	}
 
 	return &payload, nil
@@ -214,62 +214,41 @@ func convertMeasurementKeyValsToPayload(kv map[string]string, rl pcommon.Resourc
 	if err != nil {
 		return nil, err
 	}
-	payload.Meta = *meta
+	payload.Meta = meta
 	payload.Measurements = []faroTypes.Measurement{
-		*measurement,
+		measurement,
 	}
 	return &payload, nil
 }
 
-func extractMetaFromKeyVal(kv map[string]string, rl pcommon.Resource) (*faroTypes.Meta, error) {
+func extractMetaFromKeyVal(kv map[string]string, rl pcommon.Resource) (faroTypes.Meta, error) {
 	var meta faroTypes.Meta
-	app, err := extractAppFromKeyVal(kv, rl)
-	if err != nil {
-		return nil, err
-	}
+	app := extractAppFromKeyVal(kv, rl)
 	browser, err := extractBrowserFromKeyVal(kv)
 	if err != nil {
-		return nil, err
+		return meta, err
 	}
-	geo, err := extractGeoFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
+	geo := extractGeoFromKeyVal(kv)
 	k6, err := extractK6FromKeyVal(kv)
 	if err != nil {
-		return nil, err
+		return meta, err
 	}
-	page, err := extractPageFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
-	sdk, err := extractSDKFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
-	session, err := extractSessionFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
-	user, err := extractUserFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
-	view, err := extractViewFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
+	page := extractPageFromKeyVal(kv)
+	sdk := extractSDKFromKeyVal(kv)
+	session := extractSessionFromKeyVal(kv)
+	user := extractUserFromKeyVal(kv)
+	view := extractViewFromKeyVal(kv)
 
-	meta.App = *app
+	meta.App = app
 	meta.Browser = *browser
-	meta.Geo = *geo
-	meta.K6 = *k6
-	meta.Page = *page
-	meta.SDK = *sdk
-	meta.Session = *session
-	meta.User = *user
-	meta.View = *view
-	return &meta, nil
+	meta.Geo = geo
+	meta.K6 = k6
+	meta.Page = page
+	meta.SDK = sdk
+	meta.Session = session
+	meta.User = user
+	meta.View = view
+	return meta, nil
 }
 
 func extractTimestampFromKeyVal(kv map[string]string) (time.Time, error) {
@@ -285,7 +264,7 @@ func extractTimestampFromKeyVal(kv map[string]string) (time.Time, error) {
 	return timestamp, nil
 }
 
-func extractSDKFromKeyVal(kv map[string]string) (*faroTypes.SDK, error) {
+func extractSDKFromKeyVal(kv map[string]string) faroTypes.SDK {
 	var sdk faroTypes.SDK
 	if name, ok := kv["sdk_name"]; ok {
 		sdk.Name = name
@@ -296,7 +275,7 @@ func extractSDKFromKeyVal(kv map[string]string) (*faroTypes.SDK, error) {
 	if integrationsStr, ok := kv["sdk_integrations"]; ok {
 		sdk.Integrations = parseIntegrationsFromString(integrationsStr)
 	}
-	return &sdk, nil
+	return sdk
 }
 
 func parseIntegrationsFromString(integrationsString string) []faroTypes.SDKIntegration {
@@ -316,7 +295,7 @@ func parseIntegrationsFromString(integrationsString string) []faroTypes.SDKInteg
 	return sdkIntegrations
 }
 
-func extractAppFromKeyVal(kv map[string]string, rl pcommon.Resource) (*faroTypes.App, error) {
+func extractAppFromKeyVal(kv map[string]string, rl pcommon.Resource) faroTypes.App {
 	var app faroTypes.App
 	rl.Attributes().Range(func(key string, val pcommon.Value) bool {
 		if key == string(semconv.ServiceNameKey) {
@@ -372,7 +351,7 @@ func extractAppFromKeyVal(kv map[string]string, rl pcommon.Resource) (*faroTypes
 			app.Environment = environment
 		}
 	}
-	return &app, nil
+	return app
 }
 
 func extractBrowserFromKeyVal(kv map[string]string) (*faroTypes.Browser, error) {
@@ -410,17 +389,17 @@ func extractBrowserFromKeyVal(kv map[string]string) (*faroTypes.Browser, error) 
 	if err != nil {
 		return nil, err
 	}
-	browser.Brands = *browserBrands
+	browser.Brands = browserBrands
 	return &browser, nil
 }
 
-func extractBrowserBrandsFromKeyVal(kv map[string]string) (*faroTypes.Browser_Brands, error) {
+func extractBrowserBrandsFromKeyVal(kv map[string]string) (faroTypes.Browser_Brands, error) {
 	var brands faroTypes.Browser_Brands
 	if brandsAsString, ok := kv["browser_brands"]; ok {
 		if err := brands.FromBrandsString(brandsAsString); err != nil {
-			return nil, err
+			return brands, err
 		}
-		return &brands, nil
+		return brands, nil
 	}
 
 	brandsMap := make(map[int64]faroTypes.Brand)
@@ -429,7 +408,7 @@ func extractBrowserBrandsFromKeyVal(kv map[string]string) (*faroTypes.Browser_Br
 			brandAsString := strings.Split(suffix, "_")
 			idx, err := strconv.ParseInt(brandAsString[0], 10, 64)
 			if err != nil {
-				return nil, err
+				return brands, err
 			}
 			brand, ok := brandsMap[idx]
 			if !ok {
@@ -452,13 +431,13 @@ func extractBrowserBrandsFromKeyVal(kv map[string]string) (*faroTypes.Browser_Br
 			brandsAsArray[i] = brand
 		}
 		if err := brands.FromBrandsArray(brandsAsArray); err != nil {
-			return nil, err
+			return brands, err
 		}
 	}
-	return &brands, nil
+	return brands, nil
 }
 
-func extractGeoFromKeyVal(kv map[string]string) (*faroTypes.Geo, error) {
+func extractGeoFromKeyVal(kv map[string]string) faroTypes.Geo {
 	var geo faroTypes.Geo
 	if continentISOCode, ok := kv["geo_continent_iso"]; ok {
 		geo.ContinentISOCode = continentISOCode
@@ -479,22 +458,22 @@ func extractGeoFromKeyVal(kv map[string]string) (*faroTypes.Geo, error) {
 		geo.Carrier = carrier
 	}
 
-	return &geo, nil
+	return geo
 }
 
-func extractK6FromKeyVal(kv map[string]string) (*faroTypes.K6, error) {
+func extractK6FromKeyVal(kv map[string]string) (faroTypes.K6, error) {
 	var k6 faroTypes.K6
 	if isK6BrowserStr, ok := kv["k6_isK6Browser"]; ok {
 		isK6Browser, err := strconv.ParseBool(isK6BrowserStr)
 		if err != nil {
-			return nil, err
+			return k6, err
 		}
 		k6.IsK6Browser = isK6Browser
 	}
-	return &k6, nil
+	return k6, nil
 }
 
-func extractPageFromKeyVal(kv map[string]string) (*faroTypes.Page, error) {
+func extractPageFromKeyVal(kv map[string]string) faroTypes.Page {
 	var page faroTypes.Page
 	if id, ok := kv["page_id"]; ok {
 		page.ID = id
@@ -503,19 +482,19 @@ func extractPageFromKeyVal(kv map[string]string) (*faroTypes.Page, error) {
 		page.URL = url
 	}
 	page.Attributes = extractAttributesWithPrefixFromKeyVal("page_attr_", kv)
-	return &page, nil
+	return page
 }
 
-func extractSessionFromKeyVal(kv map[string]string) (*faroTypes.Session, error) {
+func extractSessionFromKeyVal(kv map[string]string) faroTypes.Session {
 	var session faroTypes.Session
 	if id, ok := kv["session_id"]; ok {
 		session.ID = id
 	}
 	session.Attributes = extractAttributesWithPrefixFromKeyVal("session_attr_", kv)
-	return &session, nil
+	return session
 }
 
-func extractUserFromKeyVal(kv map[string]string) (*faroTypes.User, error) {
+func extractUserFromKeyVal(kv map[string]string) faroTypes.User {
 	var user faroTypes.User
 	if email, ok := kv["user_email"]; ok {
 		user.Email = email
@@ -528,22 +507,22 @@ func extractUserFromKeyVal(kv map[string]string) (*faroTypes.User, error) {
 	}
 
 	user.Attributes = extractAttributesWithPrefixFromKeyVal("user_attr_", kv)
-	return &user, nil
+	return user
 }
 
-func extractViewFromKeyVal(kv map[string]string) (*faroTypes.View, error) {
+func extractViewFromKeyVal(kv map[string]string) faroTypes.View {
 	var view faroTypes.View
 	if name, ok := kv["view_name"]; ok {
 		view.Name = name
 	}
-	return &view, nil
+	return view
 }
 
-func extractLogFromKeyVal(kv map[string]string) (*faroTypes.Log, error) {
+func extractLogFromKeyVal(kv map[string]string) (faroTypes.Log, error) {
 	var log faroTypes.Log
 	timestamp, err := extractTimestampFromKeyVal(kv)
 	if err != nil {
-		return nil, err
+		return log, err
 	}
 	log.Timestamp = timestamp
 
@@ -570,12 +549,9 @@ func extractLogFromKeyVal(kv map[string]string) (*faroTypes.Log, error) {
 	if len(logContext) > 0 {
 		log.Context = logContext
 	}
-	trace, err := extractTraceFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
-	log.Trace = *trace
-	return &log, nil
+	trace := extractTraceFromKeyVal(kv)
+	log.Trace = trace
+	return log, nil
 }
 
 func extractLogContextFromKeyVal(kv map[string]string) faroTypes.LogContext {
@@ -589,7 +565,7 @@ func extractLogContextFromKeyVal(kv map[string]string) faroTypes.LogContext {
 	return logContext
 }
 
-func extractTraceFromKeyVal(kv map[string]string) (*faroTypes.TraceContext, error) {
+func extractTraceFromKeyVal(kv map[string]string) faroTypes.TraceContext {
 	var trace faroTypes.TraceContext
 	if traceID, ok := kv["traceID"]; ok {
 		trace.TraceID = traceID
@@ -597,10 +573,10 @@ func extractTraceFromKeyVal(kv map[string]string) (*faroTypes.TraceContext, erro
 	if spanID, ok := kv["spanID"]; ok {
 		trace.SpanID = spanID
 	}
-	return &trace, nil
+	return trace
 }
 
-func extractEventFromKeyVal(kv map[string]string) (*faroTypes.Event, error) {
+func extractEventFromKeyVal(kv map[string]string) (faroTypes.Event, error) {
 	var event faroTypes.Event
 	if domain, ok := kv["event_domain"]; ok {
 		event.Domain = domain
@@ -610,19 +586,16 @@ func extractEventFromKeyVal(kv map[string]string) (*faroTypes.Event, error) {
 	}
 	timestamp, err := extractTimestampFromKeyVal(kv)
 	if err != nil {
-		return nil, err
+		return event, err
 	}
 	event.Timestamp = timestamp
-	trace, err := extractTraceFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
-	event.Trace = *trace
+	trace := extractTraceFromKeyVal(kv)
+	event.Trace = trace
 	event.Attributes = extractAttributesWithPrefixFromKeyVal("event_data_", kv)
-	return &event, nil
+	return event, nil
 }
 
-func extractExceptionFromKeyVal(kv map[string]string) (*faroTypes.Exception, error) {
+func extractExceptionFromKeyVal(kv map[string]string) (faroTypes.Exception, error) {
 	var exception faroTypes.Exception
 	if exceptionType, ok := kv["type"]; ok {
 		exception.Type = exceptionType
@@ -636,20 +609,17 @@ func extractExceptionFromKeyVal(kv map[string]string) (*faroTypes.Exception, err
 	}
 	stacktrace, err := extractStacktraceFromKeyVal(kv, exception.Type, exception.Value)
 	if err != nil {
-		return nil, err
+		return exception, err
 	}
 	exception.Stacktrace = stacktrace
 	timestamp, err := extractTimestampFromKeyVal(kv)
 	if err != nil {
-		return nil, err
+		return exception, err
 	}
 	exception.Timestamp = timestamp
-	trace, err := extractTraceFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
-	exception.Trace = *trace
-	return &exception, nil
+	trace := extractTraceFromKeyVal(kv)
+	exception.Trace = trace
+	return exception, nil
 }
 
 func extractExceptionContextFromKeyVal(kv map[string]string) faroTypes.ExceptionContext {
@@ -726,7 +696,7 @@ func parseFrameFromString(frameStr string) (*faroTypes.Frame, error) {
 	return &frame, nil
 }
 
-func extractMeasurementFromKeyVal(kv map[string]string) (*faroTypes.Measurement, error) {
+func extractMeasurementFromKeyVal(kv map[string]string) (faroTypes.Measurement, error) {
 	var measurement faroTypes.Measurement
 	if measurementType, ok := kv["type"]; ok {
 		measurement.Type = measurementType
@@ -737,20 +707,17 @@ func extractMeasurementFromKeyVal(kv map[string]string) (*faroTypes.Measurement,
 	}
 	timestamp, err := extractTimestampFromKeyVal(kv)
 	if err != nil {
-		return nil, err
+		return measurement, err
 	}
 	measurement.Timestamp = timestamp
-	trace, err := extractTraceFromKeyVal(kv)
-	if err != nil {
-		return nil, err
-	}
-	measurement.Trace = *trace
+	trace := extractTraceFromKeyVal(kv)
+	measurement.Trace = trace
 	measurementValues, err := extractMeasurementValuesFromKeyVal(kv)
 	if err != nil {
-		return nil, err
+		return measurement, err
 	}
 	measurement.Values = measurementValues
-	return &measurement, nil
+	return measurement, nil
 }
 
 func extractMeasurementContextFromKeyVal(kv map[string]string) faroTypes.MeasurementContext {
