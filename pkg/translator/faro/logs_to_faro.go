@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"go.opentelemetry.io/collector/pdata/ptrace"
 	"go.opentelemetry.io/otel"
 	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
 
@@ -79,6 +80,12 @@ func mergePayloads(target *faroTypes.Payload, source *faroTypes.Payload) {
 	// merge exceptions
 	for _, exception := range source.Exceptions {
 		target.Exceptions = append(target.Exceptions, exception)
+	}
+	// merge traces
+	if source.Traces != nil {
+		sourceTraces := ptrace.NewTraces()
+		source.Traces.CopyTo(sourceTraces)
+		sourceTraces.ResourceSpans().MoveAndAppendTo(target.Traces.ResourceSpans())
 	}
 }
 

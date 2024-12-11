@@ -171,7 +171,7 @@ func TestTranslateLogsToFaroPayload(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			faroPayloads, err := TranslateLogsToFaroPayloads(context.TODO(), tt.ld)
 			tt.wantErr(t, err)
-			assert.EqualValues(t, tt.wantPayloads, faroPayloads)
+			assert.ElementsMatch(t, tt.wantPayloads, faroPayloads)
 		})
 	}
 }
