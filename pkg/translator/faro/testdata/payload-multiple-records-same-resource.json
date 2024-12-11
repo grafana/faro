@@ -275,7 +275,7 @@
       "bundleId": "testBundleId"
     },
     "user": {
-      "username": "domasx2",
+      "username": "testuser",
       "id": "123",
       "email": "geralt@kaermorhen.org",
       "attributes": {

@@ -294,17 +294,17 @@ func extractSDKFromKeyVal(kv map[string]string) (*faroTypes.SDK, error) {
 		sdk.Version = version
 	}
 	if integrationsStr, ok := kv["sdk_integrations"]; ok {
-		integrations, err := parseIntegrationsFromString(integrationsStr)
-		if err != nil {
-			return nil, err
-		}
-		sdk.Integrations = integrations
+		sdk.Integrations = parseIntegrationsFromString(integrationsStr)
 	}
 	return &sdk, nil
 }
 
-func parseIntegrationsFromString(integrationsString string) ([]faroTypes.SDKIntegration, error) {
+func parseIntegrationsFromString(integrationsString string) []faroTypes.SDKIntegration {
 	sdkIntegrations := make([]faroTypes.SDKIntegration, 0)
+	if len(integrationsString) == 0 {
+		return sdkIntegrations
+	}
+
 	for _, integrationString := range strings.Split(integrationsString, ",") {
 		integrationNameVersion := strings.Split(integrationString, ":")
 		sdkIntegrations = append(sdkIntegrations, faroTypes.SDKIntegration{
@@ -313,7 +313,7 @@ func parseIntegrationsFromString(integrationsString string) ([]faroTypes.SDKInte
 		})
 	}
 
-	return sdkIntegrations, nil
+	return sdkIntegrations
 }
 
 func extractAppFromKeyVal(kv map[string]string, rl pcommon.Resource) (*faroTypes.App, error) {
