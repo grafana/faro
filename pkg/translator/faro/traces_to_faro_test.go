@@ -180,7 +180,7 @@ func Test_extractMetaFromResourceAttributes(t *testing.T) {
 			},
 		},
 		{
-			name:               "Resource attributes don't attributes for meta",
+			name:               "Resource attributes don't contain attributes for meta",
 			resourceAttributes: pcommon.NewMap(),
 			wantMeta:           faroTypes.Meta{},
 		},
