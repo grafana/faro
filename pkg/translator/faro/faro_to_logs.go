@@ -23,8 +23,9 @@ type kvTime struct {
 	hash uint64
 }
 
-func TranslateFaroPayloadToLogs(ctx context.Context, payload faroTypes.Payload) (*plog.Logs, error) {
-	ctx, span := otel.Tracer("").Start(ctx, "TranslateFaroPayloadToLogs")
+// TranslateToLogs converts faro.Payload into Logs pipeline data
+func TranslateToLogs(ctx context.Context, payload faroTypes.Payload) (*plog.Logs, error) {
+	ctx, span := otel.Tracer("").Start(ctx, "TranslateToLogs")
 	defer span.End()
 	var kvList []*kvTime
 

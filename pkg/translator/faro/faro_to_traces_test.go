@@ -15,7 +15,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
 )
 
-func TestTranslateFaroPayloadToTraces(t *testing.T) {
+func TestTranslateToTraces(t *testing.T) {
 	testcases := []struct {
 		name           string
 		faroPayload    faroTypes.Payload
@@ -38,7 +38,7 @@ func TestTranslateFaroPayloadToTraces(t *testing.T) {
 
 	for _, tt := range testcases {
 		t.Run(tt.name, func(t *testing.T) {
-			traces, err := TranslateFaroPayloadToTraces(context.TODO(), tt.faroPayload)
+			traces, err := TranslateToTraces(context.TODO(), tt.faroPayload)
 			if !tt.wantErr(t, err) {
 				return
 			}
