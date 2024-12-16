@@ -13,8 +13,9 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
 )
 
-func TranslateTracesToFaroPayload(ctx context.Context, td ptrace.Traces) ([]*faroTypes.Payload, error) {
-	ctx, span := otel.Tracer("").Start(ctx, "TranslateTracesToFaroPayload")
+// TranslateFromTraces converts a Traces pipeline data into []*faro.Payload
+func TranslateFromTraces(ctx context.Context, td ptrace.Traces) ([]*faroTypes.Payload, error) {
+	ctx, span := otel.Tracer("").Start(ctx, "TranslateFromTraces")
 	defer span.End()
 
 	resourceSpans := td.ResourceSpans()

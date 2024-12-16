@@ -95,7 +95,7 @@ var generateTraceIDFromString = func(s string) ([16]byte, error) {
 	return traceID, nil
 }
 
-func TestTranslateTracesToFaroPayload(t *testing.T) {
+func TestTranslateFromTraces(t *testing.T) {
 	testcases := []struct {
 		name         string
 		td           ptrace.Traces
@@ -144,7 +144,7 @@ func TestTranslateTracesToFaroPayload(t *testing.T) {
 
 	for _, tt := range testcases {
 		t.Run(tt.name, func(t *testing.T) {
-			payloads, err := TranslateTracesToFaroPayload(context.TODO(), tt.td)
+			payloads, err := TranslateFromTraces(context.TODO(), tt.td)
 			tt.wantErr(t, err)
 			assert.ElementsMatch(t, tt.wantPayloads, payloads)
 		})

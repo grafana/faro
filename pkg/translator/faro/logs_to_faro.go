@@ -20,9 +20,9 @@ import (
 	"go.opentelemetry.io/collector/pdata/plog"
 )
 
-// TranslateLogsToFaroPayloads converts a Logs pipeline data into []*faro.Payload
-func TranslateLogsToFaroPayloads(ctx context.Context, ld plog.Logs) ([]*faroTypes.Payload, error) {
-	ctx, span := otel.Tracer("").Start(ctx, "TranslateLogsToFaroPayloads")
+// TranslateFromLogs converts a Logs pipeline data into []*faro.Payload
+func TranslateFromLogs(ctx context.Context, ld plog.Logs) ([]*faroTypes.Payload, error) {
+	ctx, span := otel.Tracer("").Start(ctx, "TranslateFromLogs")
 	defer span.End()
 
 	metaMap := make(map[string]*faroTypes.Payload, 0)

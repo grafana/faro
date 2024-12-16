@@ -91,7 +91,7 @@ var multipleLogRecordsWithTheSameResource = func() plog.Logs {
 	return ld
 }
 
-func TestTranslateLogsToFaroPayload(t *testing.T) {
+func TestTranslateFromLogs(t *testing.T) {
 	testcases := []struct {
 		name         string
 		ld           plog.Logs
@@ -171,7 +171,7 @@ func TestTranslateLogsToFaroPayload(t *testing.T) {
 
 	for _, tt := range testcases {
 		t.Run(tt.name, func(t *testing.T) {
-			faroPayloads, err := TranslateLogsToFaroPayloads(context.TODO(), tt.ld)
+			faroPayloads, err := TranslateFromLogs(context.TODO(), tt.ld)
 			tt.wantErr(t, err)
 			assert.ElementsMatch(t, tt.wantPayloads, faroPayloads)
 		})
