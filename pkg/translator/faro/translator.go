@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package farotranslator // import "github.com/grafana/faro/pkg/translator/faro"
+package faro // import "github.com/grafana/faro/pkg/translator/faro"
 
 import (
 	"context"
