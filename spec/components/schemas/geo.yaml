@@ -19,10 +19,12 @@ components:
         city:
           type: string
           x-go-type-skip-optional-pointer: true
-        connection_type:
+        asn_org:
           type: string
           x-go-type-skip-optional-pointer: true
-        carrier:
+          x-go-name: ASNOrg
+        asn_id:
           type: string
           x-go-type-skip-optional-pointer: true
+          x-go-name: ASNID
       x-go-type-skip-optional-pointer: true

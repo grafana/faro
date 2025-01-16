@@ -237,8 +237,8 @@ func GeoToKeyVal(g faroTypes.Geo) *KeyVal {
 	KeyValAdd(kv, "country_iso", g.CountryISOCode)
 	KeyValAdd(kv, "subdivision_iso", g.SubdivisionISO)
 	KeyValAdd(kv, "city", g.City)
-	KeyValAdd(kv, "connection_type", g.ConnectionType)
-	KeyValAdd(kv, "carrier", g.Carrier)
+	KeyValAdd(kv, "asn_org", g.ASNOrg)
+	KeyValAdd(kv, "asn_id", g.ASNId)
 	return kv
 }
 
