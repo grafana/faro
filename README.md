@@ -11,6 +11,11 @@ The repository consists of
 - [OpenAPI specification](./spec/gen/faro.gen.yaml)
 - Packages with HTTP Models generated from the OpenAPI specification
 
+## Requirements
+
+- [OpenAPI Codegen](https://github.com/oapi-codegen/oapi-codegen)
+- [Python YQ](https://pypi.org/project/yq/)
+
 ## Packages
 
 ### Go

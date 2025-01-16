@@ -113,9 +113,9 @@ type Frame struct {
 
 // Geo holds metadata about a client's geo.
 type Geo struct {
-	Carrier          string `json:"carrier,omitempty"`
+	ASNID            string `json:"asn_id,omitempty"`
+	ASNOrg           string `json:"asn_org,omitempty"`
 	City             string `json:"city,omitempty"`
-	ConnectionType   string `json:"connection_type,omitempty"`
 	ContinentISOCode string `json:"continent_iso,omitempty"`
 	CountryISOCode   string `json:"country_iso,omitempty"`
 	SubdivisionISO   string `json:"subdivision_iso,omitempty"`

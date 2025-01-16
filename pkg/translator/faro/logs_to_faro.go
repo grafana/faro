@@ -451,11 +451,11 @@ func extractGeoFromKeyVal(kv map[string]string) faroTypes.Geo {
 	if city, ok := kv["geo_city"]; ok {
 		geo.City = city
 	}
-	if connectionType, ok := kv["geo_connection_type"]; ok {
-		geo.ConnectionType = connectionType
+	if asnOrg, ok := kv["geo_asn_org"]; ok {
+		geo.ASNOrg = asnOrg
 	}
-	if carrier, ok := kv["geo_carrier"]; ok {
-		geo.Carrier = carrier
+	if asnID, ok := kv["geo_asn_id"]; ok {
+		geo.ASNID = asnID
 	}
 
 	return geo
