@@ -5,23 +5,41 @@ package faroexporter // import "github.com/grafana/faro/pkg/exporter/faro"
 import (
 	"errors"
 
+	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/config/confighttp"
+	"go.opentelemetry.io/collector/config/configretry"
+	"go.opentelemetry.io/collector/confmap"
+	"go.opentelemetry.io/collector/exporter/exporterhelper"
 	"go.uber.org/multierr"
 )
 
-// FaroExporterConfig contains the configuration options for the faro exporter
-type FaroExporterConfig struct {
-	Endpoint string `mapstructure:"endpoint"`
-}
-
 // Config contains the main configuration options for the faro exporter
 type Config struct {
-	FaroExporter FaroExporterConfig `mapstructure:"faroexporter"`
+	confighttp.ClientConfig    `mapstructure:",squash"`
+	exporterhelper.QueueConfig `mapstructure:"sending_queue"`
+	RetryConfig                configretry.BackOffConfig `mapstructure:"retry_on_failure"`
+	FaroEndpoint               string                    `mapstructure:"faro_endpoint"`
 }
 
 func (c *Config) Validate() error {
 	var errs error
-	if c.FaroExporter.Endpoint == "" {
+	if c.Endpoint == "" {
 		errs = multierr.Append(errs, errors.New("endpoint is required"))
 	}
 	return errs
 }
+
+func (c *Config) Unmarshal(component *confmap.Conf) error {
+	if component == nil {
+		return nil
+	}
+
+	if err := component.Unmarshal(c); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var _ component.Config = (*Config)(nil)
+var _ confmap.Unmarshaler = (*Config)(nil)
