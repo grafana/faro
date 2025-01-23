@@ -2,13 +2,16 @@ package faroexporter // import "github.com/grafana/faro/pkg/exporter/faro"
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/component/componenttest"
+	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/exporter/exportertest"
+	"go.opentelemetry.io/collector/pdata/plog"
 	"go.opentelemetry.io/collector/pdata/ptrace"
 )
 
@@ -41,20 +44,35 @@ func TestAcceptedResponsesAndFormats(t *testing.T) {
 			defer srv.Close()
 
 			cfg := &Config{
-				FaroEndpoint: srv.URL + "/faro",
+				ClientConfig: confighttp.ClientConfig{
+					Endpoint: srv.URL + "/faro",
+				},
 			}
 
-			exp, err := createTraces(context.Background(), exportertest.NewNopSettings(), cfg)
+			expT, err := createTraces(context.Background(), exportertest.NewNopSettings(), cfg)
 			require.NoError(t, err)
 
-			err = exp.Start(context.Background(), componenttest.NewNopHost())
+			err = expT.Start(context.Background(), componenttest.NewNopHost())
 			require.NoError(t, err)
 			t.Cleanup(func() {
-				require.NoError(t, exp.Shutdown(context.Background()))
+				require.NoError(t, expT.Shutdown(context.Background()))
 			})
 
 			traces := ptrace.NewTraces()
-			err = exp.ConsumeTraces(context.Background(), traces)
+			err = expT.ConsumeTraces(context.Background(), traces)
+			require.NoError(t, err)
+
+			expL, err := createLogs(context.Background(), exportertest.NewNopSettings(), cfg)
+			require.NoError(t, err)
+
+			err = expL.Start(context.Background(), componenttest.NewNopHost())
+			require.NoError(t, err)
+			t.Cleanup(func() {
+				require.NoError(t, expL.Shutdown(context.Background()))
+			})
+
+			logs := plog.NewLogs()
+			err = expL.ConsumeLogs(context.Background(), logs)
 			require.NoError(t, err)
 		})
 	}
@@ -64,5 +82,6 @@ func createBackend(endpoint string, handler func(writer http.ResponseWriter, req
 	mux := http.NewServeMux()
 	mux.HandleFunc(endpoint, handler)
 	srv := httptest.NewServer(mux)
+	fmt.Printf("Server URL: %s\n", srv.URL)
 	return srv
 }
