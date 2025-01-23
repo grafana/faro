@@ -193,6 +193,11 @@ type Meta struct {
 	View View `json:"view,omitempty"`
 }
 
+// Overrides represents session override metadata.
+type Overrides struct {
+	ServiceName string `json:"serviceName,omitempty"`
+}
+
 // Page holds metadata about the web page event originates from.
 type Page struct {
 	Attributes map[string]string `json:"attributes,omitempty"`
@@ -231,7 +236,9 @@ type SDKIntegration struct {
 type Session struct {
 	Attributes map[string]string `json:"attributes,omitempty"`
 	ID         string            `json:"id,omitempty"`
-	Overrides  map[string]string `json:"overrides,omitempty"`
+
+	// Overrides represents session override metadata.
+	Overrides Overrides `json:"overrides,omitempty"`
 }
 
 // SpanEvent defines model for SpanEvent.

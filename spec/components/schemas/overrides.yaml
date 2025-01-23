@@ -1,0 +1,10 @@
+components:
+  schemas:
+    Overrides:
+      type: object
+      description: represents session override metadata.
+      properties:
+        serviceName:
+            type: string
+            x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
