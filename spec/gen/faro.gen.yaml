@@ -72,10 +72,7 @@ components:
             type: string
           x-go-type-skip-optional-pointer: true
         overrides:
-          type: object
-          additionalProperties:
-            type: string
-          x-go-type-skip-optional-pointer: true
+          $ref: '#/components/schemas/Overrides'
       x-go-type-skip-optional-pointer: true
     Stacktrace:
       type: object
@@ -211,6 +208,14 @@ components:
           additionalProperties:
             type: number
             format: double
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
+    Overrides:
+      type: object
+      description: represents session override metadata.
+      properties:
+        serviceName:
+          type: string
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
     View:

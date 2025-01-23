@@ -13,8 +13,5 @@ components:
             type: string
           x-go-type-skip-optional-pointer: true
         overrides:
-          type: object
-          additionalProperties:
-            type: string
-          x-go-type-skip-optional-pointer: true
+          $ref: '#/components/schemas/Overrides'
       x-go-type-skip-optional-pointer: true
