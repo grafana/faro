@@ -5,38 +5,24 @@ package faroreceiver // import "github.com/grafana/faro/pkg/receiver/faro"
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
-	"sync"
 
 	faro "github.com/grafana/faro/pkg/go"
 	httpHelper "github.com/grafana/faro/pkg/receiver/faro/internal/httphelper"
 	farotranslator "github.com/grafana/faro/pkg/translator/faro"
 	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/component/componentstatus"
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer"
-	"go.opentelemetry.io/collector/consumer/xconsumer"
 	"go.opentelemetry.io/collector/receiver"
 	"go.opentelemetry.io/collector/receiver/receiverhelper"
+	"go.uber.org/zap"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 )
-
-type faroReceiver struct {
-	cfg        *Config
-	serverHTTP *http.Server
-
-	nextTraces   consumer.Traces
-	nextMetrics  consumer.Metrics
-	nextLogs     consumer.Logs
-	nextProfiles xconsumer.Profiles
-	shutdownWG   sync.WaitGroup
-
-	obsrepHTTP *receiverhelper.ObsReport
-
-	settings *receiver.Settings
-}
 
 func newFaroReceiver(cfg *Config, set *receiver.Settings) (*faroReceiver, error) {
 	r := &faroReceiver{
@@ -55,6 +41,41 @@ func newFaroReceiver(cfg *Config, set *receiver.Settings) (*faroReceiver, error)
 	}
 
 	return r, nil
+}
+
+type faroReceiver struct {
+	cfg        *Config
+	serverHTTP *http.Server
+
+	nextTraces consumer.Traces
+	nextLogs   consumer.Logs
+
+	obsrepHTTP *receiverhelper.ObsReport
+
+	settings *receiver.Settings
+}
+
+func (r *faroReceiver) Start(ctx context.Context, host component.Host) error {
+	if r.nextTraces == nil {
+		return fmt.Errorf("traces consumer is not registered")
+	}
+	if r.nextLogs == nil {
+		return fmt.Errorf("logs consumer is not registered")
+	}
+
+	return r.startHTTPServer(ctx, host)
+}
+
+func (r *faroReceiver) Shutdown(ctx context.Context) error {
+	return r.serverHTTP.Shutdown(ctx)
+}
+
+func (r *faroReceiver) RegisterTracesConsumer(tc consumer.Traces) {
+	r.nextTraces = tc
+}
+
+func (r *faroReceiver) RegisterLogsConsumer(lc consumer.Logs) {
+	r.nextLogs = lc
 }
 
 func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host) error {
@@ -78,6 +99,13 @@ func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host)
 		return err
 	}
 
+	go func() {
+		if err := r.serverHTTP.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) && err != nil {
+			componentstatus.ReportStatus(host, componentstatus.NewFatalErrorEvent(err))
+		}
+	}()
+	r.settings.Logger.Info("HTTP server started", zap.String("address", r.serverHTTP.Addr))
+
 	return nil
 }
 
@@ -85,25 +113,22 @@ func (r *faroReceiver) handleFaroRequest(resp http.ResponseWriter, req *http.Req
 	resp.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 	resp.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-	// Handle preflight OPTIONS request
+	// Preflight request
 	if req.Method == http.MethodOptions {
 		resp.WriteHeader(http.StatusOK)
 		return
 	}
 
-	// Only accept POST requests
 	if req.Method != http.MethodPost {
 		errorHandler(resp, req, "only POST method is supported", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Verify content type is application/json
 	if req.Header.Get("Content-Type") != "application/json" {
 		errorHandler(resp, req, "invalid Content-Type", http.StatusUnsupportedMediaType)
 		return
 	}
 
-	// Read the request body
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		errorHandler(resp, req, fmt.Sprintf("failed to read request body: %v", err), http.StatusBadRequest)

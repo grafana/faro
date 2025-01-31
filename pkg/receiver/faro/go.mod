@@ -42,6 +42,7 @@ require (
 	github.com/rs/cors v1.11.1 // indirect
 	go.opentelemetry.io/collector/client v1.24.0 // indirect
 	go.opentelemetry.io/collector/component v0.118.0 // indirect
+	go.opentelemetry.io/collector/component/componentstatus v0.118.0
 	go.opentelemetry.io/collector/config/configauth v0.118.0 // indirect
 	go.opentelemetry.io/collector/config/configcompression v1.24.0 // indirect
 	go.opentelemetry.io/collector/config/configopaque v1.24.0 // indirect
