@@ -68,7 +68,13 @@ func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host)
 	})
 
 	var err error
-	if r.serverHTTP, err = r.cfg.HTTP.ToServer(ctx, host, r.settings.TelemetrySettings, httpMux, confighttp.WithErrorHandler(errorHandler)); err != nil {
+	if r.serverHTTP, err = r.cfg.HTTP.ToServer(
+		ctx,
+		host,
+		r.settings.TelemetrySettings,
+		httpMux,
+		confighttp.WithErrorHandler(errorHandler),
+	); err != nil {
 		return err
 	}
 
@@ -76,8 +82,6 @@ func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host)
 }
 
 func (r *faroReceiver) handleFaroRequest(resp http.ResponseWriter, req *http.Request) {
-	// Set CORS headers to allow all origins
-	resp.Header().Set("Access-Control-Allow-Origin", "*")
 	resp.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 	resp.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
@@ -115,7 +119,6 @@ func (r *faroReceiver) handleFaroRequest(resp http.ResponseWriter, req *http.Req
 
 	var errors []string
 
-	// Convert Faro traces
 	traces, err := farotranslator.TranslateToTraces(req.Context(), payload)
 	if err == nil {
 		err = r.nextTraces.ConsumeTraces(req.Context(), *traces)
