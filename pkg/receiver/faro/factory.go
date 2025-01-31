@@ -8,6 +8,7 @@ import (
 
 	"github.com/grafana/faro/pkg/receiver/faro/internal/metadata"
 	"go.opentelemetry.io/collector/component"
+	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/receiver"
 )
@@ -20,7 +21,9 @@ func createDefaultConfig() component.Config {
 	return &Config{
 		Protocols: Protocols{
 			HTTP: &HTTPConfig{
-				FaroURLPath: defaultFaroURLPath,
+				ServerConfig: &confighttp.ServerConfig{
+					Endpoint: defaultFaroURLPath,
+				},
 			},
 		},
 	}

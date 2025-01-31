@@ -17,8 +17,6 @@ const protoHTTP = "protocols::http"
 
 type HTTPConfig struct {
 	*confighttp.ServerConfig `mapstructure:",squash"`
-
-	FaroURLPath string `mapstructure:"faro_url_path,omitempty"`
 }
 
 type Protocols struct {
@@ -38,6 +36,9 @@ func (cfg *Config) Validate() error {
 	if cfg.HTTP == nil {
 		return errors.New("must specify HTTP protocol")
 	}
+	if cfg.HTTP.Endpoint == "" {
+		return errors.New("must specify endpoint")
+	}
 	return nil
 }
 
@@ -50,7 +51,7 @@ func (cfg *Config) Unmarshal(conf *confmap.Conf) error {
 	if !conf.IsSet(protoHTTP) {
 		cfg.HTTP = nil
 	} else {
-		if cfg.HTTP.FaroURLPath, err = sanitizeURLPath(cfg.HTTP.FaroURLPath); err != nil {
+		if cfg.HTTP.Endpoint, err = sanitizeURLPath(cfg.HTTP.Endpoint); err != nil {
 			return err
 		}
 	}

@@ -25,6 +25,10 @@ import (
 )
 
 func newFaroReceiver(cfg *Config, set *receiver.Settings) (*faroReceiver, error) {
+	set.Logger.Info("Starting FaroReceiver")
+	set.Logger.Info("FaroReceiver config", zap.Any("config", cfg))
+	cfg.Validate()
+	set.Logger.Info("FaroReceiver config", zap.Any("config", cfg))
 	r := &faroReceiver{
 		cfg:      cfg,
 		settings: set,
@@ -80,11 +84,14 @@ func (r *faroReceiver) RegisterLogsConsumer(lc consumer.Logs) {
 
 func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host) error {
 	if r.cfg.HTTP == nil {
+		r.settings.Logger.Info("HTTP server not configured, skipping")
 		return nil
 	}
 
+	r.settings.Logger.Info("Starting HTTP server", zap.String("endpoint", r.cfg.HTTP.Endpoint))
+
 	httpMux := http.NewServeMux()
-	httpMux.HandleFunc(r.cfg.HTTP.FaroURLPath, func(resp http.ResponseWriter, req *http.Request) {
+	httpMux.HandleFunc(r.cfg.HTTP.Endpoint, func(resp http.ResponseWriter, req *http.Request) {
 		r.handleFaroRequest(resp, req)
 	})
 
@@ -96,11 +103,13 @@ func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host)
 		httpMux,
 		confighttp.WithErrorHandler(errorHandler),
 	); err != nil {
+		r.settings.Logger.Error("Failed to start HTTP server", zap.Error(err))
 		return err
 	}
 
 	go func() {
 		if err := r.serverHTTP.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) && err != nil {
+			r.settings.Logger.Error("Failed to start HTTP server", zap.Error(err))
 			componentstatus.ReportStatus(host, componentstatus.NewFatalErrorEvent(err))
 		}
 	}()
@@ -144,27 +153,44 @@ func (r *faroReceiver) handleFaroRequest(resp http.ResponseWriter, req *http.Req
 
 	var errors []string
 
-	traces, err := farotranslator.TranslateToTraces(req.Context(), payload)
-	if err == nil {
-		err = r.nextTraces.ConsumeTraces(req.Context(), *traces)
-		if err != nil {
-			errors = append(errors, fmt.Sprintf("failed to push traces: %v", err))
+	if r.nextTraces != nil {
+		traces, err := farotranslator.TranslateToTraces(req.Context(), payload)
+		if err == nil {
+			if traces != nil {
+				err = r.nextTraces.ConsumeTraces(req.Context(), *traces)
+				if err != nil {
+					errors = append(errors, fmt.Sprintf("failed to push traces: %v", err))
+				}
+			} else {
+				r.settings.Logger.Debug("Faro traces are nil, skipping")
+			}
+		} else {
+			errors = append(errors, fmt.Sprintf("failed to convert Faro traces: %v", err))
 		}
 	} else {
-		errors = append(errors, fmt.Sprintf("failed to convert Faro traces: %v", err))
+		r.settings.Logger.Debug("Traces consumer not registered, skipping")
 	}
 
-	logs, err := farotranslator.TranslateToLogs(req.Context(), payload)
-	if err == nil {
-		err = r.nextLogs.ConsumeLogs(req.Context(), *logs)
-		if err != nil {
-			errors = append(errors, fmt.Sprintf("failed to push logs: %v", err))
+	if r.nextLogs != nil {
+		logs, err := farotranslator.TranslateToLogs(req.Context(), payload)
+		if err == nil {
+			if logs != nil {
+				err = r.nextLogs.ConsumeLogs(req.Context(), *logs)
+				if err != nil {
+					errors = append(errors, fmt.Sprintf("failed to push logs: %v", err))
+				}
+			} else {
+				r.settings.Logger.Debug("Faro logs are nil, skipping")
+			}
+		} else {
+			errors = append(errors, fmt.Sprintf("failed to convert Faro logs: %v", err))
 		}
 	} else {
-		errors = append(errors, fmt.Sprintf("failed to convert Faro logs: %v", err))
+		r.settings.Logger.Debug("Logs consumer not registered, skipping")
 	}
 
 	if len(errors) > 0 {
+		r.settings.Logger.Error("Failed to process Faro payload", zap.Any("payload", payload), zap.Any("errors", errors))
 		errorHandler(resp, req, strings.Join(errors, "\n"), http.StatusInternalServerError)
 		return
 	}
