@@ -14,17 +14,13 @@ import (
 )
 
 const (
-	defaultFaroURLPath = "/faro"
+	defaultFaroEndpoint = "localhost:8080"
 )
 
 func createDefaultConfig() component.Config {
 	return &Config{
-		Protocols: Protocols{
-			HTTP: &HTTPConfig{
-				ServerConfig: &confighttp.ServerConfig{
-					Endpoint: defaultFaroURLPath,
-				},
-			},
+		ServerConfig: &confighttp.ServerConfig{
+			Endpoint: defaultFaroEndpoint,
 		},
 	}
 }
