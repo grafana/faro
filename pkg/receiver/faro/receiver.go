@@ -83,20 +83,20 @@ func (r *faroReceiver) RegisterLogsConsumer(lc consumer.Logs) {
 }
 
 func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host) error {
-	if r.cfg.HTTP == nil {
+	if r.cfg == nil {
 		r.settings.Logger.Info("HTTP server not configured, skipping")
 		return nil
 	}
 
-	r.settings.Logger.Info("Starting HTTP server", zap.String("endpoint", r.cfg.HTTP.Endpoint))
+	r.settings.Logger.Info("Starting HTTP server", zap.String("endpoint", r.cfg.Endpoint))
 
 	httpMux := http.NewServeMux()
-	httpMux.HandleFunc(r.cfg.HTTP.Endpoint, func(resp http.ResponseWriter, req *http.Request) {
+	httpMux.HandleFunc(r.cfg.Endpoint, func(resp http.ResponseWriter, req *http.Request) {
 		r.handleFaroRequest(resp, req)
 	})
 
 	var err error
-	if r.serverHTTP, err = r.cfg.HTTP.ToServer(
+	if r.serverHTTP, err = r.cfg.ToServer(
 		ctx,
 		host,
 		r.settings.TelemetrySettings,

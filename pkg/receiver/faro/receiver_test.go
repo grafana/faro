@@ -40,13 +40,8 @@ func TestFaroReceiver_Start(t *testing.T) {
 	}
 
 	cfg := &Config{
-
-		Protocols: Protocols{
-			HTTP: &HTTPConfig{
-				ServerConfig: &confighttp.ServerConfig{
-					Endpoint: "/faro",
-				},
-			},
+		ServerConfig: &confighttp.ServerConfig{
+			Endpoint: "/faro",
 		},
 	}
 	logger, err := zap.NewDevelopment()
