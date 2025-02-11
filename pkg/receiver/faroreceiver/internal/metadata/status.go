@@ -5,8 +5,8 @@ import (
 )
 
 var (
-	Type      = component.MustNewType("faroreceiver")
-	ScopeName = "github.com/grafana/faro/pkg/receiver/faro"
+	Type      = component.MustNewType("faro")
+	ScopeName = "github.com/grafana/faro/pkg/receiver/faroreceiver"
 )
 
 const (

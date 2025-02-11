@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package faroreceiver // import "github.com/grafana/faro/pkg/receiver/faro"
+package faroreceiver // import "github.com/grafana/faro/pkg/receiver/faroreceiver"
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/grafana/faro/pkg/receiver/faro/internal/metadata"
+	"github.com/grafana/faro/pkg/receiver/faroreceiver/internal/metadata"
+	"github.com/grafana/faro/pkg/receiver/faroreceiver/internal/sharedcomponent"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer"
@@ -44,12 +45,17 @@ func createFaroReceiverTraces(
 		return nil, fmt.Errorf("invalid configuration: %T", cfg)
 	}
 
-	receiver, err := newFaroReceiver(fCfg, &set)
+	receiver, err := receivers.LoadOrStore(
+		fCfg,
+		func() (*faroReceiver, error) {
+			return newFaroReceiver(fCfg, &set)
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	receiver.RegisterTracesConsumer(nextTraces)
+	receiver.Unwrap().RegisterTracesConsumer(nextTraces)
 
 	return receiver, nil
 }
@@ -64,13 +70,25 @@ func createFaroReceiverLogs(
 	if !ok {
 		return nil, fmt.Errorf("invalid configuration: %T", cfg)
 	}
-
-	receiver, err := newFaroReceiver(fCfg, &set)
+	receiver, err := receivers.LoadOrStore(
+		fCfg,
+		func() (*faroReceiver, error) {
+			return newFaroReceiver(fCfg, &set)
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	receiver.RegisterLogsConsumer(nextLogs)
+	receiver.Unwrap().RegisterLogsConsumer(nextLogs)
 
 	return receiver, nil
 }
+
+// This is the map of already created Faro receivers for particular configurations.
+// We maintain this map because the receiver.Factory is asked trace and metric receivers separately
+// when it gets createFaroReceiverTraces() and createFaroReceiverLogs() but they must not
+// create separate objects, they must use one faroReceiver object per configuration.
+// When the receiver is shutdown it should be removed from this map so the same configuration
+// can be recreated successfully.
+var receivers = sharedcomponent.NewMap[*Config, *faroReceiver]()

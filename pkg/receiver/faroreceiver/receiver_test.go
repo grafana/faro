@@ -1,4 +1,6 @@
-package faroreceiver
+// SPDX-License-Identifier: Apache-2.0
+
+package faroreceiver // import "github.com/grafana/faro/pkg/receiver/faroreceiver"
 
 import (
 	"bytes"

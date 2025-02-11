@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package faroreceiver // import "github.com/grafana/faro/pkg/receiver/faro"
+package faroreceiver // import "github.com/grafana/faro/pkg/receiver/faroreceiver"
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	faro "github.com/grafana/faro/pkg/go"
-	httpHelper "github.com/grafana/faro/pkg/receiver/faro/internal/httphelper"
+	httpHelper "github.com/grafana/faro/pkg/receiver/faroreceiver/internal/httphelper"
 	farotranslator "github.com/grafana/faro/pkg/translator/faro"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componentstatus"
