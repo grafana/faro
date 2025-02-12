@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package faroexporter // import "github.com/grafana/faro/pkg/exporter/faro"
+package faroexporter // import "github.com/grafana/faro/pkg/exporter/faroexporter"
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"time"
 
-	httpHelper "github.com/grafana/faro/pkg/exporter/faro/internal/httphelper"
+	httpHelper "github.com/grafana/faro/pkg/exporter/faroexporter/internal/httphelper"
 	faro "github.com/grafana/faro/pkg/go"
 	farotranslator "github.com/grafana/faro/pkg/translator/faro"
 	"go.opentelemetry.io/collector/component"

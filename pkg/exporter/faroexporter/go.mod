@@ -1,4 +1,4 @@
-module github.com/grafana/faro/pkg/exporter/faro
+module github.com/grafana/faro/pkg/exporter/faroexporter
 
 go 1.23.3
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package faroexporter // import "github.com/grafana/faro/pkg/exporter/faro"
+package faroexporter // import "github.com/grafana/faro/pkg/exporter/faroexporter"
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 	"go.opentelemetry.io/collector/exporter"
 	"go.opentelemetry.io/collector/exporter/exporterhelper"
 
-	"github.com/grafana/faro/pkg/exporter/faro/internal/metadata"
+	"github.com/grafana/faro/pkg/exporter/faroexporter/internal/metadata"
 )
 
 // NewFactory creates a factory for Faro exporter.

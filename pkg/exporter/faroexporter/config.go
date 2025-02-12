@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package faroexporter // import "github.com/grafana/faro/pkg/exporter/faro"
+package faroexporter // import "github.com/grafana/faro/pkg/exporter/faroexporter"
 
 import (
 	"errors"
