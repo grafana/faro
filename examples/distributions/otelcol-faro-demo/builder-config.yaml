@@ -15,6 +15,6 @@ processors:
 
 receivers:
   - gomod:
-      github.com/grafana/faro/pkg/receiver/faro b99ea3b24d33279048e17fb910cfba668992122c
+      github.com/grafana/faro/pkg/receiver/faroreceiver b99ea3b24d33279048e17fb910cfba668992122c
 
 providers:
