@@ -1,0 +1,20 @@
+dist:
+  module: github.com/open-telemetry/opentelemetry-collector-releases/contrib
+  name: otelcol-faro-demo
+  description: Demo OTel Collector distribution for with Faro components
+  version: 0.1.0
+  output_path: ./otelcol-faro-demo
+
+exporters:
+  - gomod:
+      go.opentelemetry.io/collector/exporter/debugexporter v0.119.0
+  - gomod:
+      github.com/grafana/faro/pkg/exporter/faroexporter b99ea3b24d33279048e17fb910cfba668992122c
+
+processors:
+
+receivers:
+  - gomod:
+      github.com/grafana/faro/pkg/receiver/faro b99ea3b24d33279048e17fb910cfba668992122c
+
+providers:
