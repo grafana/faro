@@ -195,7 +195,8 @@ type Meta struct {
 
 // Overrides represents session override metadata.
 type Overrides struct {
-	ServiceName string `json:"serviceName,omitempty"`
+	GeoLocationTrackingEnabled bool   `json:"geoLocationTrackingEnabled,omitempty"`
+	ServiceName                string `json:"serviceName,omitempty"`
 }
 
 // Page holds metadata about the web page event originates from.
