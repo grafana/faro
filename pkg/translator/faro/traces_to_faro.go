@@ -80,6 +80,7 @@ func resourceSpansToFaroPayload(rs ptrace.ResourceSpans) *faroTypes.Payload {
 func extractMetaFromResourceAttributes(resourceAttributes pcommon.Map) faroTypes.Meta {
 	var meta faroTypes.Meta
 	var app faroTypes.App
+	var sdk faroTypes.SDK
 
 	if appName, ok := resourceAttributes.Get(string(semconv.ServiceNameKey)); ok {
 		app.Name = appName.Str()
@@ -96,7 +97,14 @@ func extractMetaFromResourceAttributes(resourceAttributes pcommon.Map) faroTypes
 	if appBundleID, ok := resourceAttributes.Get("app_bundle_id"); ok {
 		app.BundleID = appBundleID.Str()
 	}
+	if sdkName, ok := resourceAttributes.Get(string(semconv.TelemetrySDKNameKey)); ok {
+		sdk.Name = sdkName.Str()
+	}
+	if sdkVersion, ok := resourceAttributes.Get(string(semconv.TelemetrySDKVersionKey)); ok {
+		sdk.Version = sdkVersion.Str()
+	}
 
 	meta.App = app
+	meta.SDK = sdk
 	return meta
 }
