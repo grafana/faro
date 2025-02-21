@@ -43,7 +43,7 @@ func TestFaroReceiver_Start(t *testing.T) {
 
 	cfg := &Config{
 		ServerConfig: &confighttp.ServerConfig{
-			Endpoint: "/faro",
+			Endpoint: "localhost:8080",
 		},
 	}
 	logger, err := zap.NewDevelopment()
@@ -70,7 +70,7 @@ func TestFaroReceiver_Start(t *testing.T) {
 
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
-			req, err := http.NewRequest(http.MethodPost, server.URL+"/faro", nil)
+			req, err := http.NewRequest(http.MethodPost, server.URL+faroPath, nil)
 			require.NoError(t, err)
 
 			req.Header.Set("Content-Type", "application/json")
