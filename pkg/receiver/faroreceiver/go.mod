@@ -3,8 +3,8 @@ module github.com/grafana/faro/pkg/receiver/faroreceiver
 go 1.23.3
 
 require (
-	github.com/grafana/faro/pkg/go v0.0.0-20250212082855-b99ea3b24d33
-	github.com/grafana/faro/pkg/translator/faro v0.0.0-20250212082855-b99ea3b24d33
+	github.com/grafana/faro/pkg/go v0.0.0-20250224094912-645146796e7d
+	github.com/grafana/faro/pkg/translator/faro v0.0.0-20250224094912-645146796e7d
 	go.opentelemetry.io/collector/config/confighttp v0.119.0
 	go.opentelemetry.io/collector/pdata/pprofile v0.119.0
 	go.uber.org/goleak v1.3.0
