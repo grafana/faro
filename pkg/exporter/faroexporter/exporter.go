@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"runtime"
 	"strconv"
+	"sync"
 	"time"
 
 	httpHelper "github.com/grafana/faro/pkg/exporter/faroexporter/internal/httphelper"
@@ -24,6 +25,7 @@ import (
 	"go.opentelemetry.io/collector/exporter/exporterhelper"
 	"go.opentelemetry.io/collector/pdata/plog"
 	"go.opentelemetry.io/collector/pdata/ptrace"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 )
 
@@ -33,6 +35,8 @@ type faroExporter struct {
 	logger    *zap.Logger
 	settings  component.TelemetrySettings
 	userAgent string
+
+	wg sync.WaitGroup
 }
 
 const (
@@ -71,7 +75,7 @@ func (fe *faroExporter) start(ctx context.Context, host component.Host) error {
 	return nil
 }
 
-func (fe *faroExporter) export(ctx context.Context, fp []*faro.Payload) error {
+func (fe *faroExporter) export(ctx context.Context, fp *faro.Payload) error {
 	fe.logger.Debug("Preparing to make HTTP request", zap.String("endpoint", fe.config.Endpoint))
 	request, err := json.Marshal(fp)
 	if err != nil {
@@ -121,20 +125,34 @@ func (fe *faroExporter) export(ctx context.Context, fp []*faro.Payload) error {
 	return consumererror.NewPermanent(formattedErr)
 }
 
+func (fe *faroExporter) consume(ctx context.Context, fp []*faro.Payload) error {
+	var errs error
+	fe.wg.Add(len(fp))
+	for _, p := range fp {
+		go func() {
+			defer fe.wg.Done()
+			err := fe.export(ctx, p)
+			errs = multierr.Append(errs, err)
+		}()
+	}
+	fe.wg.Wait()
+	return errs
+}
+
 func (fe *faroExporter) ConsumeTraces(ctx context.Context, td ptrace.Traces) error {
 	fp, err := farotranslator.TranslateFromTraces(ctx, td)
 	if err != nil {
-		return fmt.Errorf("failed to translate traces to faro payload: %w", err)
+		return fmt.Errorf("failed to translate traces to faro payloads: %w", err)
 	}
-	return fe.export(ctx, fp)
+	return fe.consume(ctx, fp)
 }
 
 func (fe *faroExporter) ConsumeLogs(ctx context.Context, ld plog.Logs) error {
 	fp, err := farotranslator.TranslateFromLogs(ctx, ld)
 	if err != nil {
-		return fmt.Errorf("failed to translate logs to faro payload: %w", err)
+		return fmt.Errorf("failed to translate logs to faro payloads: %w", err)
 	}
-	return fe.export(ctx, fp)
+	return fe.consume(ctx, fp)
 }
 
 func (fe *faroExporter) Capabilities() consumer.Capabilities {

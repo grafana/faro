@@ -24,6 +24,8 @@ import (
 	spb "google.golang.org/genproto/googleapis/rpc/status"
 )
 
+const faroPath = "/faro"
+
 func newFaroReceiver(cfg *Config, set *receiver.Settings) (*faroReceiver, error) {
 	set.Logger.Info("Starting FaroReceiver")
 	set.Logger.Info("FaroReceiver config", zap.Any("config", cfg))
@@ -91,7 +93,7 @@ func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host)
 	r.settings.Logger.Info("Starting HTTP server", zap.String("endpoint", r.cfg.Endpoint))
 
 	httpMux := http.NewServeMux()
-	httpMux.HandleFunc(r.cfg.Endpoint, func(resp http.ResponseWriter, req *http.Request) {
+	httpMux.HandleFunc(faroPath, func(resp http.ResponseWriter, req *http.Request) {
 		r.handleFaroRequest(resp, req)
 	})
 
@@ -107,8 +109,14 @@ func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host)
 		return err
 	}
 
+	listener, err := r.cfg.ToListener(ctx)
+	if err != nil {
+		r.settings.Logger.Error("Failed to create faro receiver listener", zap.Error(err))
+		return err
+	}
+
 	go func() {
-		if err := r.serverHTTP.ListenAndServe(); !errors.Is(err, http.ErrServerClosed) && err != nil {
+		if err := r.serverHTTP.Serve(listener); !errors.Is(err, http.ErrServerClosed) && err != nil {
 			r.settings.Logger.Error("Failed to start HTTP server", zap.Error(err))
 			componentstatus.ReportStatus(host, componentstatus.NewFatalErrorEvent(err))
 		}
