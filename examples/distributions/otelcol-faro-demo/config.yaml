@@ -1,0 +1,20 @@
+receivers:
+  faro:
+    endpoint: localhost:8080
+
+exporters:
+  faro:
+    endpoint: "https://faro.example.com/collect"
+
+service:
+  pipelines:
+    traces:
+      receivers:
+        - faro
+      exporters:
+        - faro
+    logs:
+      receivers:
+        - faro
+      exporters:
+        - faro
