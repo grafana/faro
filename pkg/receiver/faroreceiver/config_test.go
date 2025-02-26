@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package faroreceiver
+package faroreceiver // import "github.com/grafana/faro/pkg/receiver/faroreceiver/faroreceiver"
 
 import (
 	"path/filepath"
