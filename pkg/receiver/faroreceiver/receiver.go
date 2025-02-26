@@ -12,7 +12,6 @@ import (
 	"strings"
 
 	faro "github.com/grafana/faro/pkg/go"
-	httpHelper "github.com/grafana/faro/pkg/receiver/faroreceiver/internal/httphelper"
 	farotranslator "github.com/grafana/faro/pkg/translator/faro"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componentstatus"
@@ -22,6 +21,8 @@ import (
 	"go.opentelemetry.io/collector/receiver/receiverhelper"
 	"go.uber.org/zap"
 	spb "google.golang.org/genproto/googleapis/rpc/status"
+
+	httpHelper "github.com/grafana/faro/pkg/receiver/faroreceiver/internal/httphelper"
 )
 
 const faroPath = "/faro"
@@ -29,7 +30,9 @@ const faroPath = "/faro"
 func newFaroReceiver(cfg *Config, set *receiver.Settings) (*faroReceiver, error) {
 	set.Logger.Info("Starting FaroReceiver")
 	set.Logger.Info("FaroReceiver config", zap.Any("config", cfg))
-	cfg.Validate()
+	if err := cfg.Validate(); err != nil {
+		return nil, err
+	}
 	set.Logger.Info("FaroReceiver config", zap.Any("config", cfg))
 	r := &faroReceiver{
 		cfg:      cfg,
@@ -121,6 +124,7 @@ func (r *faroReceiver) startHTTPServer(ctx context.Context, host component.Host)
 			componentstatus.ReportStatus(host, componentstatus.NewFatalErrorEvent(err))
 		}
 	}()
+
 	r.settings.Logger.Info("HTTP server started", zap.String("address", r.serverHTTP.Addr))
 
 	return nil
@@ -206,7 +210,7 @@ func (r *faroReceiver) handleFaroRequest(resp http.ResponseWriter, req *http.Req
 	resp.WriteHeader(http.StatusOK)
 }
 
-func errorHandler(w http.ResponseWriter, r *http.Request, errMsg string, statusCode int) {
+func errorHandler(w http.ResponseWriter, _ *http.Request, errMsg string, statusCode int) {
 	s := httpHelper.NewStatusFromMsgAndHTTPCode(errMsg, statusCode)
 	writeStatusResponse(w, jsEncoder, statusCode, s.Proto())
 }
