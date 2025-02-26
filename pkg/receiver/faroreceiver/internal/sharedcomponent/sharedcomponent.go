@@ -8,161 +8,71 @@
 package sharedcomponent
 
 import (
-	"container/ring"
 	"context"
 	"sync"
 
 	"go.opentelemetry.io/collector/component"
-	"go.opentelemetry.io/collector/component/componentstatus"
 )
 
-func NewMap[K comparable, V component.Component]() *Map[K, V] {
-	return &Map[K, V]{
-		components: map[K]*Component[V]{},
+// SharedComponents a map that keeps reference of all created instances for a given configuration,
+// and ensures that the shared state is started and stopped only once.
+type SharedComponents struct {
+	comps map[any]*SharedComponent
+}
+
+// NewSharedComponents returns a new empty SharedComponents.
+func NewSharedComponents() *SharedComponents {
+	return &SharedComponents{
+		comps: make(map[any]*SharedComponent),
 	}
 }
 
-// Map keeps reference of all created instances for a given shared key such as a component configuration.
-type Map[K comparable, V component.Component] struct {
-	lock       sync.Mutex
-	components map[K]*Component[V]
-}
-
-// LoadOrStore returns the already created instance if exists, otherwise creates a new instance
+// GetOrAdd returns the already created instance if exists, otherwise creates a new instance
 // and adds it to the map of references.
-func (m *Map[K, V]) LoadOrStore(key K, create func() (V, error)) (*Component[V], error) {
-	m.lock.Lock()
-	defer m.lock.Unlock()
-	if c, ok := m.components[key]; ok {
-		return c, nil
+func (scs *SharedComponents) GetOrAdd(key any, create func() component.Component) *SharedComponent {
+	if c, ok := scs.comps[key]; ok {
+		return c
 	}
-	comp, err := create()
-	if err != nil {
-		return nil, err
-	}
-
-	newComp := &Component[V]{
-		component: comp,
+	newComp := &SharedComponent{
+		Component: create(),
 		removeFunc: func() {
-			m.lock.Lock()
-			defer m.lock.Unlock()
-			delete(m.components, key)
+			delete(scs.comps, key)
 		},
 	}
-	m.components[key] = newComp
-	return newComp, nil
+	scs.comps[key] = newComp
+	return newComp
 }
 
-// Component ensures that the wrapped component is started and stopped only once.
-// When stopped it is removed from the Map.
-type Component[V component.Component] struct {
-	component V
+// SharedComponent ensures that the wrapped component is started and stopped only once.
+// When stopped it is removed from the SharedComponents map.
+type SharedComponent struct {
+	component.Component
 
 	startOnce  sync.Once
 	stopOnce   sync.Once
 	removeFunc func()
-
-	hostWrapper *hostWrapper
 }
 
 // Unwrap returns the original component.
-func (c *Component[V]) Unwrap() V {
-	return c.component
+func (r *SharedComponent) Unwrap() component.Component {
+	return r.Component
 }
 
-// Start starts the underlying component if it never started before.
-func (c *Component[V]) Start(ctx context.Context, host component.Host) error {
-	if c.hostWrapper == nil {
-		var err error
-		c.startOnce.Do(func() {
-			c.hostWrapper = &hostWrapper{
-				host:           host,
-				sources:        make([]componentstatus.Reporter, 0),
-				previousEvents: ring.New(5),
-			}
-			statusReporter, isStatusReporter := host.(componentstatus.Reporter)
-			if isStatusReporter {
-				c.hostWrapper.addSource(statusReporter)
-			}
-
-			// It's important that status for a shared component is reported through its
-			// telemetry settings to keep status in sync and avoid race conditions. This logic duplicates
-			// and takes priority over the automated status reporting that happens in graph, making the
-			// status reporting in graph a no-op.
-			c.hostWrapper.Report(componentstatus.NewEvent(componentstatus.StatusStarting))
-			if err = c.component.Start(ctx, c.hostWrapper); err != nil {
-				c.hostWrapper.Report(componentstatus.NewPermanentErrorEvent(err))
-			}
-		})
-		return err
-	}
-	statusReporter, isStatusReporter := host.(componentstatus.Reporter)
-	if isStatusReporter {
-		c.hostWrapper.addSource(statusReporter)
-	}
-	return nil
-}
-
-var (
-	_ component.Host           = (*hostWrapper)(nil)
-	_ componentstatus.Reporter = (*hostWrapper)(nil)
-)
-
-type hostWrapper struct {
-	host           component.Host
-	sources        []componentstatus.Reporter
-	previousEvents *ring.Ring
-	lock           sync.Mutex
-}
-
-func (h *hostWrapper) GetExtensions() map[component.ID]component.Component {
-	return h.host.GetExtensions()
-}
-
-func (h *hostWrapper) Report(e *componentstatus.Event) {
-	// Only remember an event if it will be emitted and it has not been sent already.
-	h.lock.Lock()
-	defer h.lock.Unlock()
-	if len(h.sources) > 0 {
-		h.previousEvents.Value = e
-		h.previousEvents = h.previousEvents.Next()
-	}
-	for _, s := range h.sources {
-		s.Report(e)
-	}
-}
-
-func (h *hostWrapper) addSource(s componentstatus.Reporter) {
-	h.lock.Lock()
-	defer h.lock.Unlock()
-	h.previousEvents.Do(func(a any) {
-		if e, ok := a.(*componentstatus.Event); ok {
-			s.Report(e)
-		}
-	})
-	h.sources = append(h.sources, s)
-}
-
-// Shutdown shuts down the underlying component.
-func (c *Component[V]) Shutdown(ctx context.Context) error {
+// Start implements component.Component.
+func (r *SharedComponent) Start(ctx context.Context, host component.Host) error {
 	var err error
-	c.stopOnce.Do(func() {
-		// It's important that status for a shared component is reported through its
-		// telemetry settings to keep status in sync and avoid race conditions. This logic duplicates
-		// and takes priority over the automated status reporting that happens in graph, making the
-		// status reporting in graph a no-op.
-		if c.hostWrapper != nil {
-			c.hostWrapper.Report(componentstatus.NewEvent(componentstatus.StatusStopping))
-		}
-		err = c.component.Shutdown(ctx)
-		if c.hostWrapper != nil {
-			if err != nil {
-				c.hostWrapper.Report(componentstatus.NewPermanentErrorEvent(err))
-			} else {
-				c.hostWrapper.Report(componentstatus.NewEvent(componentstatus.StatusStopped))
-			}
-		}
-		c.removeFunc()
+	r.startOnce.Do(func() {
+		err = r.Component.Start(ctx, host)
+	})
+	return err
+}
+
+// Shutdown implements component.Component.
+func (r *SharedComponent) Shutdown(ctx context.Context) error {
+	var err error
+	r.stopOnce.Do(func() {
+		err = r.Component.Shutdown(ctx)
+		r.removeFunc()
 	})
 	return err
 }

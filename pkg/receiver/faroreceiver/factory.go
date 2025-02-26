@@ -6,17 +6,26 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/grafana/faro/pkg/receiver/faroreceiver/internal/metadata"
-	"github.com/grafana/faro/pkg/receiver/faroreceiver/internal/sharedcomponent"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/receiver"
+
+	"github.com/grafana/faro/pkg/receiver/faroreceiver/internal/metadata"
+	"github.com/grafana/faro/pkg/receiver/faroreceiver/internal/sharedcomponent"
 )
 
 const (
 	defaultFaroEndpoint = "localhost:8080"
 )
+
+// This is the map of already created Faro receivers for particular configurations.
+// We maintain this map because the receiver.Factory is asked trace and metric receivers separately
+// when it gets createFaroReceiverTraces() and createFaroReceiverLogs() but they must not
+// create separate objects, they must use one faroReceiver object per configuration.
+// When the receiver is shutdown it should be removed from this map so the same configuration
+// can be recreated successfully.
+var receivers = sharedcomponent.NewSharedComponents()
 
 func createDefaultConfig() component.Config {
 	return &Config{
@@ -35,7 +44,7 @@ func NewFactory() receiver.Factory {
 }
 
 func createFaroReceiverTraces(
-	ctx context.Context,
+	_ context.Context,
 	set receiver.Settings,
 	cfg component.Config,
 	nextTraces consumer.Traces,
@@ -44,24 +53,26 @@ func createFaroReceiverTraces(
 	if !ok {
 		return nil, fmt.Errorf("invalid configuration: %T", cfg)
 	}
-
-	receiver, err := receivers.LoadOrStore(
+	var err error
+	receiver := receivers.GetOrAdd(
 		fCfg,
-		func() (*faroReceiver, error) {
-			return newFaroReceiver(fCfg, &set)
+		func() component.Component {
+			var rcv component.Component
+			rcv, err = newFaroReceiver(fCfg, &set)
+			return rcv
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	receiver.Unwrap().RegisterTracesConsumer(nextTraces)
+	receiver.Unwrap().(*faroReceiver).RegisterTracesConsumer(nextTraces)
 
 	return receiver, nil
 }
 
 func createFaroReceiverLogs(
-	ctx context.Context,
+	_ context.Context,
 	set receiver.Settings,
 	cfg component.Config,
 	nextLogs consumer.Logs,
@@ -70,25 +81,20 @@ func createFaroReceiverLogs(
 	if !ok {
 		return nil, fmt.Errorf("invalid configuration: %T", cfg)
 	}
-	receiver, err := receivers.LoadOrStore(
+	var err error
+	receiver := receivers.GetOrAdd(
 		fCfg,
-		func() (*faroReceiver, error) {
-			return newFaroReceiver(fCfg, &set)
+		func() component.Component {
+			var rcv component.Component
+			rcv, err = newFaroReceiver(fCfg, &set)
+			return rcv
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	receiver.Unwrap().RegisterLogsConsumer(nextLogs)
+	receiver.Unwrap().(*faroReceiver).RegisterLogsConsumer(nextLogs)
 
 	return receiver, nil
 }
-
-// This is the map of already created Faro receivers for particular configurations.
-// We maintain this map because the receiver.Factory is asked trace and metric receivers separately
-// when it gets createFaroReceiverTraces() and createFaroReceiverLogs() but they must not
-// create separate objects, they must use one faroReceiver object per configuration.
-// When the receiver is shutdown it should be removed from this map so the same configuration
-// can be recreated successfully.
-var receivers = sharedcomponent.NewMap[*Config, *faroReceiver]()
