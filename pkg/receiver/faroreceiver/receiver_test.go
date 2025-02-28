@@ -14,7 +14,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/component/componenttest"
-	"go.opentelemetry.io/collector/config/confighttp"
 	"go.opentelemetry.io/collector/consumer/consumertest"
 	"go.opentelemetry.io/collector/receiver/receivertest"
 	"go.uber.org/zap"
@@ -41,14 +40,12 @@ func TestFaroReceiver_Start(t *testing.T) {
 		},
 	}
 
-	cfg := &Config{
-		ServerConfig: &confighttp.ServerConfig{
-			Endpoint: "localhost:8080",
-		},
-	}
+	cfg := createDefaultConfig().(*Config)
 	logger, err := zap.NewDevelopment()
 	require.NoError(t, err)
-	defer logger.Sync()
+	defer func() {
+		_ = logger.Sync()
+	}()
 
 	settings := receivertest.NewNopSettings()
 	settings.Logger = logger
@@ -89,7 +86,7 @@ func TestFaroReceiver_Start(t *testing.T) {
 			assert.Equal(t, tc.expectedStatusCode, resp.StatusCode)
 
 			traces := nextTraces.AllTraces()
-			assert.Equal(t, tc.expectedTraces, len(traces))
+			assert.Len(t, traces, tc.expectedTraces)
 		})
 	}
 }
