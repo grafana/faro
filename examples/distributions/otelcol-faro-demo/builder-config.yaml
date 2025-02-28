@@ -1,0 +1,14 @@
+dist:
+  module: github.com/grafana/faro/otelcol-faro-demo
+  name: otelcol-faro-demo
+  description: Demo OTel Collector distribution for with Faro components
+  version: 0.1.0
+  output_path: ./otelcol-faro-demo
+
+exporters:
+  - gomod:
+      github.com/grafana/faro/pkg/exporter/faroexporter 645146796e7da7b21315e290352dbd0bb6f08060
+
+receivers:
+  - gomod:
+      github.com/grafana/faro/pkg/receiver/faroreceiver 645146796e7da7b21315e290352dbd0bb6f08060
