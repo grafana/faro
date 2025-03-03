@@ -7,8 +7,8 @@ dist:
 
 exporters:
   - gomod:
-      github.com/grafana/faro/pkg/exporter/faroexporter 645146796e7da7b21315e290352dbd0bb6f08060
+      github.com/grafana/faro/pkg/exporter/faroexporter 3524abe362b728e889f0b701a0cc737bd67a545b
 
 receivers:
   - gomod:
-      github.com/grafana/faro/pkg/receiver/faroreceiver 645146796e7da7b21315e290352dbd0bb6f08060
+      github.com/grafana/faro/pkg/receiver/faroreceiver 3524abe362b728e889f0b701a0cc737bd67a545b
