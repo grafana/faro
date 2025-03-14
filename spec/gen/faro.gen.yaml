@@ -107,6 +107,21 @@ components:
           type: string
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
+    Action:
+      type: object
+      description: holds data about user action events. These are events that are
+        directly related to user interactions as well as the parent action itself
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        id:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        parentId:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true
     BrandsString:
       type: string
       description: represents brands as a string.
@@ -175,6 +190,9 @@ components:
           x-go-type-skip-optional-pointer: true
         trace:
           $ref: '#/components/schemas/TraceContext'
+        action:
+          $ref: '#/components/schemas/Action'
+      x-go-type-skip-optional-pointer: true
     SpanEvent:
       type: object
       required:
@@ -209,6 +227,8 @@ components:
             type: number
             format: double
           x-go-type-skip-optional-pointer: true
+        action:
+          $ref: '#/components/schemas/Action'
       x-go-type-skip-optional-pointer: true
     Overrides:
       type: object
@@ -250,6 +270,9 @@ components:
           format: date-time
         trace:
           $ref: '#/components/schemas/TraceContext'
+        action:
+          $ref: '#/components/schemas/Action'
+      x-go-type-skip-optional-pointer: true
     Kind:
       type: string
       enum:
@@ -442,6 +465,9 @@ components:
         value:
           type: string
           x-go-type-skip-optional-pointer: true
+        action:
+          $ref: '#/components/schemas/Action'
+      x-go-type-skip-optional-pointer: true
     LogContext:
       type: object
       description: is a string to string map structure that represents the context

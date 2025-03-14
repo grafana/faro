@@ -34,6 +34,13 @@ const (
 	TimeFormatRFC3339Milli TimeFormat = "2006-01-02T15:04:05.999Z"
 )
 
+// Action holds data about user action events. These are events that are directly related to user interactions as well as the parent action itself
+type Action struct {
+	ID       string `json:"id,omitempty"`
+	Name     string `json:"name,omitempty"`
+	ParentID string `json:"parentId,omitempty"`
+}
+
 // App holds metadata about the application event originates from.
 type App struct {
 	BundleID    string `json:"bundleId,omitempty"`
@@ -76,6 +83,8 @@ type Browser_Brands struct {
 
 // Event holds RUM event data.
 type Event struct {
+	// Action holds data about user action events. These are events that are directly related to user interactions as well as the parent action itself
+	Action     Action            `json:"action,omitempty"`
 	Attributes map[string]string `json:"attributes,omitempty"`
 	Domain     string            `json:"domain,omitempty"`
 	Name       string            `json:"name"`
@@ -87,6 +96,8 @@ type Event struct {
 
 // Exception holds all the data regarding an exception.
 type Exception struct {
+	// Action holds data about user action events. These are events that are directly related to user interactions as well as the parent action itself
+	Action  Action           `json:"action,omitempty"`
 	Context ExceptionContext `json:"context,omitempty"`
 
 	// Stacktrace is a collection of Frames.
@@ -131,6 +142,9 @@ type Kind string
 
 // Log controls the data that come into a Log message.
 type Log struct {
+	// Action holds data about user action events. These are events that are directly related to user interactions as well as the parent action itself
+	Action Action `json:"action,omitempty"`
+
 	// Context is a string to string map structure that represents the context of a log message.
 	Context LogContext `json:"context,omitempty"`
 
@@ -151,6 +165,8 @@ type LogLevel string
 
 // Measurement holds the data for user provided measurements.
 type Measurement struct {
+	// Action holds data about user action events. These are events that are directly related to user interactions as well as the parent action itself
+	Action    Action             `json:"action,omitempty"`
 	Context   MeasurementContext `json:"context,omitempty"`
 	Timestamp time.Time          `json:"timestamp,omitempty"`
 
