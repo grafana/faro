@@ -1,0 +1,16 @@
+components:
+  schemas:
+    Action:
+      type: object
+      description: holds data about user action events. These are events that are directly related to user interactions as well as the parent action itself
+      properties:
+        name:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        id:
+          type: string
+          x-go-type-skip-optional-pointer: true
+        parentId:
+          type: string
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

@@ -5,13 +5,13 @@ components:
       description: holds the data for user provided measurements.
       properties:
         context:
-          $ref: '#/components/schemas/MeasurementContext'
+          $ref: "#/components/schemas/MeasurementContext"
         timestamp:
           type: string
           format: date-time
           x-go-type-skip-optional-pointer: true
         trace:
-          $ref: '#/components/schemas/TraceContext'
+          $ref: "#/components/schemas/TraceContext"
         type:
           type: string
           x-go-type-skip-optional-pointer: true
@@ -21,4 +21,6 @@ components:
             type: number
             format: double
           x-go-type-skip-optional-pointer: true
+        action:
+          $ref: "#/components/schemas/Action"
       x-go-type-skip-optional-pointer: true

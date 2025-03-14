@@ -21,4 +21,7 @@ components:
           format: date-time
           x-go-type-skip-optional-pointer: true
         trace:
-          $ref: '#/components/schemas/TraceContext'
+          $ref: "#/components/schemas/TraceContext"
+        action:
+          $ref: "#/components/schemas/Action"
+      x-go-type-skip-optional-pointer: true
