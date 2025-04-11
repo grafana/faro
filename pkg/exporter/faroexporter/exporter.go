@@ -17,7 +17,7 @@ import (
 
 	httpHelper "github.com/grafana/faro/pkg/exporter/faroexporter/internal/httphelper"
 	faro "github.com/grafana/faro/pkg/go"
-	farotranslator "github.com/grafana/faro/pkg/translator/faro"
+	farotranslator "github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/faro"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/consumer/consumererror"
@@ -125,13 +125,13 @@ func (fe *faroExporter) export(ctx context.Context, fp *faro.Payload) error {
 	return consumererror.NewPermanent(formattedErr)
 }
 
-func (fe *faroExporter) consume(ctx context.Context, fp []*faro.Payload) error {
+func (fe *faroExporter) consume(ctx context.Context, fp []faro.Payload) error {
 	var errs error
 	fe.wg.Add(len(fp))
 	for _, p := range fp {
 		go func() {
 			defer fe.wg.Done()
-			err := fe.export(ctx, p)
+			err := fe.export(ctx, &p)
 			errs = multierr.Append(errs, err)
 		}()
 	}
