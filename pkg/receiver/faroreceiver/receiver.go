@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	faro "github.com/grafana/faro/pkg/go"
-	farotranslator "github.com/grafana/faro/pkg/translator/faro"
+	farotranslator "github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/faro"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componentstatus"
 	"go.opentelemetry.io/collector/config/confighttp"
@@ -168,13 +168,12 @@ func (r *faroReceiver) handleFaroRequest(resp http.ResponseWriter, req *http.Req
 	if r.nextTraces != nil {
 		traces, err := farotranslator.TranslateToTraces(req.Context(), payload)
 		if err == nil {
-			if traces != nil {
-				err = r.nextTraces.ConsumeTraces(req.Context(), *traces)
-				if err != nil {
+			if traces.ResourceSpans().Len() > 0 {
+				if err = r.nextTraces.ConsumeTraces(req.Context(), traces); err != nil {
 					errors = append(errors, fmt.Sprintf("failed to push traces: %v", err))
 				}
 			} else {
-				r.settings.Logger.Debug("Faro traces are nil, skipping")
+				r.settings.Logger.Debug("Faro traces are empty, skipping")
 			}
 		} else {
 			errors = append(errors, fmt.Sprintf("failed to convert Faro traces: %v", err))
@@ -186,13 +185,12 @@ func (r *faroReceiver) handleFaroRequest(resp http.ResponseWriter, req *http.Req
 	if r.nextLogs != nil {
 		logs, err := farotranslator.TranslateToLogs(req.Context(), payload)
 		if err == nil {
-			if logs != nil {
-				err = r.nextLogs.ConsumeLogs(req.Context(), *logs)
-				if err != nil {
+			if logs.ResourceLogs().Len() > 0 {
+				if err := r.nextLogs.ConsumeLogs(req.Context(), logs); err != nil {
 					errors = append(errors, fmt.Sprintf("failed to push logs: %v", err))
 				}
 			} else {
-				r.settings.Logger.Debug("Faro logs are nil, skipping")
+				r.settings.Logger.Debug("Faro logs are empty, skipping")
 			}
 		} else {
 			errors = append(errors, fmt.Sprintf("failed to convert Faro logs: %v", err))
