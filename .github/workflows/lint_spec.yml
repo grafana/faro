@@ -7,10 +7,14 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false
       - name: Lint spec
-        uses: mhiew/redoc-lint-github-action@v3
+        uses: mhiew/redoc-lint-github-action@fa9aaf1f917397c43201196d45b2cb5d95dcbf86 # v3
         with:
           args: 'spec/gen/faro.gen.yaml'
