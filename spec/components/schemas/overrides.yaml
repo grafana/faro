@@ -9,5 +9,5 @@ components:
             x-go-type-skip-optional-pointer: true
         geoLocationTrackingEnabled:
             type: boolean
-            x-go-type-skip-optional-pointer: true
+            x-go-type-skip-optional-pointer: false
       x-go-type-skip-optional-pointer: true
