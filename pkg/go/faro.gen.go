@@ -211,7 +211,7 @@ type Meta struct {
 
 // Overrides represents session override metadata.
 type Overrides struct {
-	GeoLocationTrackingEnabled bool   `json:"geoLocationTrackingEnabled,omitempty"`
+	GeoLocationTrackingEnabled *bool  `json:"geoLocationTrackingEnabled,omitempty"`
 	ServiceName                string `json:"serviceName,omitempty"`
 }
 
