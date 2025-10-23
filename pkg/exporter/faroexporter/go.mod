@@ -3,7 +3,7 @@ module github.com/grafana/faro/pkg/exporter/faroexporter
 go 1.23.3
 
 require (
-	github.com/grafana/faro/pkg/go v0.0.0-20250314155512-06a06da3b8bc
+	github.com/grafana/faro/pkg/go v0.0.0-20251022212103-bbb6f6d10844
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/faro v0.123.0
 	go.opentelemetry.io/collector/component v0.119.0
 	go.opentelemetry.io/collector/component/componenttest v0.119.0

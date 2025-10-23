@@ -35,8 +35,8 @@ github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/grafana/faro/pkg/go v0.0.0-20250314155512-06a06da3b8bc h1:o8BraeLtggPjb/n91jvQT4SgGn8j0jxOyIGEQSoIXwU=
-github.com/grafana/faro/pkg/go v0.0.0-20250314155512-06a06da3b8bc/go.mod h1:4CP5sfwz5+uVfNgCeA5/N6csXnzOgnkgT1jh57ASaK4=
+github.com/grafana/faro/pkg/go v0.0.0-20251022212103-bbb6f6d10844 h1:EqXFD7/1hicHad/pPNx4pqcDA160ibPVTVPZNINVTIg=
+github.com/grafana/faro/pkg/go v0.0.0-20251022212103-bbb6f6d10844/go.mod h1:EqEdiU51DV1iXz+h7mK8K4el1NwgxjzFStrGNaW+ymA=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
 github.com/json-iterator/go v1.1.12/go.mod h1:e30LSqwooZae/UwlEbR2852Gd8hjQvJoHmT4TnhNGBo=
 github.com/juju/gnuflag v0.0.0-20171113085948-2ce1bb71843d/go.mod h1:2PavIy+JPciBPrBUjwbNvtwB6RQlve+hkpll6QSNmOE=
