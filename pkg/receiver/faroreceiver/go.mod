@@ -53,7 +53,7 @@ require (
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/rs/cors v1.11.1 // indirect
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/collector/client v1.25.0 // indirect
 	go.opentelemetry.io/collector/component v0.119.0
 	go.opentelemetry.io/collector/component/componentstatus v0.119.0
