@@ -2,7 +2,7 @@ module github.com/grafana/faro/pkg/exporter/faroexporter
 
 go 1.24.0
 
-toolchain go1.24.13
+toolchain go1.26.0
 
 require (
 	github.com/grafana/faro/pkg/go v0.0.0-20250314155512-06a06da3b8bc
