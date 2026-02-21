@@ -7,7 +7,7 @@ toolchain go1.24.13
 require (
 	github.com/grafana/faro/pkg/go v0.0.0-20250314155512-06a06da3b8bc
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/faro v0.123.0
-	go.opentelemetry.io/collector/config/confighttp v0.119.0
+	go.opentelemetry.io/collector/config/confighttp v0.146.1
 	go.opentelemetry.io/collector/pdata/pprofile v0.119.0
 	go.uber.org/goleak v1.3.0
 )
