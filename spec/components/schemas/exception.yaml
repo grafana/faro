@@ -20,6 +20,9 @@ components:
         type:
           type: string
           x-go-type-skip-optional-pointer: true
+        fingerprint:
+          type: string
+          x-go-type-skip-optional-pointer: true
         value:
           type: string
           x-go-type-skip-optional-pointer: true
