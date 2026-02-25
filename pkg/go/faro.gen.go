@@ -97,8 +97,9 @@ type Event struct {
 // Exception holds all the data regarding an exception.
 type Exception struct {
 	// Action holds data about user action events. These are events that are directly related to user interactions as well as the parent action itself
-	Action  Action           `json:"action,omitempty"`
-	Context ExceptionContext `json:"context,omitempty"`
+	Action      Action           `json:"action,omitempty"`
+	Context     ExceptionContext `json:"context,omitempty"`
+	Fingerprint string           `json:"fingerprint,omitempty"`
 
 	// Stacktrace is a collection of Frames.
 	Stacktrace *Stacktrace `json:"stacktrace,omitempty"`
