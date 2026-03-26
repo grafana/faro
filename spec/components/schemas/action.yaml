@@ -6,11 +6,14 @@ components:
       properties:
         name:
           type: string
+          description: Action name (e.g. `click`, `submit`)
           x-go-type-skip-optional-pointer: true
         id:
           type: string
+          description: Unique action identifier
           x-go-type-skip-optional-pointer: true
         parentId:
           type: string
+          description: Parent action ID for nested actions
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

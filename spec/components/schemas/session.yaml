@@ -6,12 +6,15 @@ components:
       properties:
         id:
           type: string
+          description: Session identifier
           x-go-type-skip-optional-pointer: true
         attributes:
           type: object
+          description: Arbitrary session attributes
           additionalProperties:
             type: string
           x-go-type-skip-optional-pointer: true
         overrides:
+          description: Session-level overrides
           $ref: '#/components/schemas/Overrides'
       x-go-type-skip-optional-pointer: true

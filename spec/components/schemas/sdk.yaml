@@ -6,12 +6,15 @@ components:
       properties:
         name:
           type: string
+          description: SDK name (e.g. `@grafana/faro-web-sdk`)
           x-go-type-skip-optional-pointer: true
         version:
           type: string
+          description: SDK version
           x-go-type-skip-optional-pointer: true
         integrations:
           type: array
+          description: Active SDK integrations/plugins
           items:
             $ref: '#/components/schemas/SDKIntegration'
           x-go-type-skip-optional-pointer: true

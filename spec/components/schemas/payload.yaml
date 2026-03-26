@@ -6,31 +6,37 @@ components:
       properties:
         events:
           type: array
+          description: Custom RUM events
           items:
             $ref: '#/components/schemas/Event'
           minItems: 0
           x-go-type-skip-optional-pointer: true
         exceptions:
           type: array
+          description: Captured exceptions / errors
           items:
             $ref: '#/components/schemas/Exception'
           minItems: 0
           x-go-type-skip-optional-pointer: true
         logs:
           type: array
+          description: Log messages
           items:
             $ref: '#/components/schemas/Log'
           minItems: 0
           x-go-type-skip-optional-pointer: true
         measurements:
           type: array
+          description: Custom numeric measurements
           items:
             $ref: '#/components/schemas/Measurement'
           x-go-type-skip-optional-pointer: true
         meta:
+          description: Contextual metadata about the app, session, user, and client
           $ref: '#/components/schemas/Meta'
           free-form: true
           x-go-type-skip-optional-pointer: true
         traces:
           type: object
+          description: OTel trace data (OTLP JSON format)
           $ref: '#/components/schemas/Traces'

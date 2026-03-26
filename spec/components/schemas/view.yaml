@@ -6,5 +6,6 @@ components:
       properties:
         name:
           type: string
+          description: View or screen name
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

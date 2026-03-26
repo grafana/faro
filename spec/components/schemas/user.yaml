@@ -6,15 +6,19 @@ components:
       properties:
         username:
           type: string
+          description: Username
           x-go-type-skip-optional-pointer: true
         id:
           type: string
+          description: User identifier
           x-go-type-skip-optional-pointer: true
         email:
           type: string
+          description: Email address
           x-go-type-skip-optional-pointer: true
         attributes:
           type: object
+          description: Arbitrary user attributes
           additionalProperties:
             type: string
           x-go-type-skip-optional-pointer: true

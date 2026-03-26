@@ -6,8 +6,10 @@ components:
       properties:
         brand:
           type: string
+          description: Brand name
           x-go-type-skip-optional-pointer: true
         version:
           type: string
+          description: Brand version
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

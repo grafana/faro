@@ -6,20 +6,26 @@ components:
       properties:
         bundleId:
           type: string
+          description: Bundle identifier (used by mobile apps)
           x-go-type-skip-optional-pointer: true
         environment:
           type: string
+          description: Deployment environment (e.g. `production`, `staging`)
           x-go-type-skip-optional-pointer: true
         name:
           type: string
+          description: Application name
           x-go-type-skip-optional-pointer: true
         namespace:
           type: string
+          description: Application namespace
           x-go-type-skip-optional-pointer: true
         release:
           type: string
+          description: Release identifier
           x-go-type-skip-optional-pointer: true
         version:
           type: string
+          description: Application version
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

@@ -6,13 +6,16 @@ components:
       properties:
         attributes:
           type: object
+          description: Arbitrary page attributes
           additionalProperties:
             type: string
           x-go-type-skip-optional-pointer: true
         id:
           type: string
+          description: Page identifier
           x-go-type-skip-optional-pointer: true
         url:
           type: string
+          description: Full page URL
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

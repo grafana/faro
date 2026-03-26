@@ -6,25 +6,31 @@ components:
       properties:
         continent_iso:
           type: string
+          description: Continent ISO code
           x-go-type-skip-optional-pointer: true
           x-go-name: ContinentISOCode
         country_iso:
           type: string
+          description: Country ISO 3166-1 alpha-2 code
           x-go-type-skip-optional-pointer: true
           x-go-name: CountryISOCode
         subdivision_iso:
           type: string
+          description: Subdivision / state ISO code
           x-go-type-skip-optional-pointer: true
           x-go-name: SubdivisionISO
         city:
           type: string
+          description: City name
           x-go-type-skip-optional-pointer: true
         asn_org:
           type: string
+          description: ASN organisation name
           x-go-type-skip-optional-pointer: true
           x-go-name: ASNOrg
         asn_id:
           type: string
+          description: ASN identifier
           x-go-type-skip-optional-pointer: true
           x-go-name: ASNID
       x-go-type-skip-optional-pointer: true

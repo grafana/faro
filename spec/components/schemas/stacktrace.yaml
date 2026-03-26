@@ -6,6 +6,7 @@ components:
       properties:
         frames:
           type: array
+          description: Ordered list of stack frames (innermost first)
           items:
             $ref: '#/components/schemas/Frame'
           minItems: 0

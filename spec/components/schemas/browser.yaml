@@ -6,32 +6,41 @@ components:
       properties:
         name:
           type: string
+          description: Browser name (e.g. `Chrome`)
           x-go-type-skip-optional-pointer: true
         version:
           type: string
+          description: Browser version
           x-go-type-skip-optional-pointer: true
         os:
           type: string
+          description: Operating system
           x-go-type-skip-optional-pointer: true
           x-go-name: OS
         mobile:
           type: boolean
+          description: Whether the browser is on a mobile device
           x-go-type-skip-optional-pointer: true
         userAgent:
           type: string
+          description: Full user agent string
           x-go-type-skip-optional-pointer: true
         language:
           type: string
+          description: Browser language
           x-go-type-skip-optional-pointer: true
         brands:
+          description: Browser brand list; either a string or an array of Brand objects
           oneOf:
             - $ref: '#/components/schemas/BrandsString'
             - $ref: '#/components/schemas/BrandsArray'
           x-go-type-skip-optional-pointer: true
         viewportWidth:
           type: string
+          description: Viewport width in pixels
           x-go-type-skip-optional-pointer: true
         viewportHeight:
           type: string
+          description: Viewport height in pixels
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

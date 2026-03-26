@@ -6,8 +6,10 @@ components:
       properties:
         serviceName:
             type: string
+            description: Override the service name for this session
             x-go-type-skip-optional-pointer: true
         geoLocationTrackingEnabled:
             type: boolean
+            description: Whether geo-location tracking is enabled for this session
             x-go-type-skip-optional-pointer: false
       x-go-type-skip-optional-pointer: true
