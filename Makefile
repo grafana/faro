@@ -36,7 +36,7 @@ build-image:
 	docker build -t faro-build -f Dockerfile.build .
 
 build-all-docker: build-image
-	docker run --rm -v "$(PWD):/workspace" faro-build make build-all
+	docker run --rm --user $(shell id -u):$(shell id -g) -e HOME=/tmp -e GOPATH=/tmp/go -v "$(PWD):/workspace" faro-build make build-all
 
 # TODO finalize ts types generation and uncomment this part
 build-all: build-go # build-ts
