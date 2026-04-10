@@ -7,25 +7,33 @@ components:
         - timestamp
       properties:
         context:
+          description: Arbitrary key-value context
           $ref: "#/components/schemas/ExceptionContext"
           x-go-type-skip-optional-pointer: true
         stacktrace:
+          description: Stack trace
           $ref: "#/components/schemas/Stacktrace"
         timestamp:
           type: string
+          description: Time the exception was captured
           format: date-time
         trace:
+          description: Associated trace and span IDs
           $ref: "#/components/schemas/TraceContext"
           x-go-type-skip-optional-pointer: true
         type:
           type: string
+          description: Exception class or type name
           x-go-type-skip-optional-pointer: true
         fingerprint:
           type: string
+          description: Custom grouping fingerprint
           x-go-type-skip-optional-pointer: true
         value:
           type: string
+          description: Exception message
           x-go-type-skip-optional-pointer: true
         action:
+          description: Associated user action
           $ref: "#/components/schemas/Action"
       x-go-type-skip-optional-pointer: true

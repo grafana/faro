@@ -5,22 +5,28 @@ components:
       description: holds the data for user provided measurements.
       properties:
         context:
+          description: Arbitrary key-value context
           $ref: "#/components/schemas/MeasurementContext"
         timestamp:
           type: string
+          description: Time the measurement was captured
           format: date-time
           x-go-type-skip-optional-pointer: true
         trace:
+          description: Associated trace and span IDs
           $ref: "#/components/schemas/TraceContext"
         type:
           type: string
+          description: Measurement type name
           x-go-type-skip-optional-pointer: true
         values:
           type: object
+          description: Named numeric values
           additionalProperties:
             type: number
             format: double
           x-go-type-skip-optional-pointer: true
         action:
+          description: Associated user action
           $ref: "#/components/schemas/Action"
       x-go-type-skip-optional-pointer: true

@@ -7,20 +7,26 @@ components:
         - timestamp
       properties:
         context:
+          description: Arbitrary key-value context
           $ref: "#/components/schemas/LogContext"
           x-go-type-skip-optional-pointer: true
         level:
+          description: Log severity level
           $ref: "#/components/schemas/LogLevel"
           x-go-type-skip-optional-pointer: true
           x-go-name: LogLevel
         message:
           type: string
+          description: Log message text
           x-go-type-skip-optional-pointer: true
         timestamp:
           type: string
+          description: Time the log was captured
           format: date-time
         trace:
+          description: Associated trace and span IDs
           $ref: "#/components/schemas/TraceContext"
         action:
+          description: Associated user action
           $ref: "#/components/schemas/Action"
       x-go-type-skip-optional-pointer: true

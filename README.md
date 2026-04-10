@@ -11,12 +11,44 @@ The repository consists of
 - [OpenAPI specification](./spec/gen/faro.gen.yaml)
 - Packages with HTTP Models generated from the OpenAPI specification
 
+## Building
+
+### With Docker (recommended)
+
+No local dependencies required — Docker handles everything:
+
+```sh
+make build-all-docker
+```
+
+This builds a local image (`faro-build`) on first run, then regenerates all packages inside it.
+
+### Locally
+
+Install dependencies first:
+
+```sh
+# Python yq (not mikefarah/yq)
+pip3 install yq
+
+# oapi-codegen
+make install-dependencies
+```
+
+Then build:
+
+```sh
+make build-all
+```
+
 ## Requirements
 
-- [OpenAPI Codegen](https://github.com/oapi-codegen/oapi-codegen)
-- [Python YQ](https://pypi.org/project/yq/)
+- [Docker](https://docs.docker.com/get-docker/) (for `build-all-docker`)
+- [Python YQ](https://pypi.org/project/yq/) (for local builds — note: this is the Python-based `yq`, not [mikefarah/yq](https://github.com/mikefarah/yq))
+- [oapi-codegen v2.6.0](https://github.com/oapi-codegen/oapi-codegen) (for local builds)
 
 ## Packages
 
 ### Go
-[/pkg/go](./pkg/go) contains HTTP Models in Go generated from the [OpenAPI specification](./spec/gen/faro.gen.yaml) using [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen).    
+
+[/pkg/go](./pkg/go) contains HTTP Models in Go generated from the [OpenAPI specification](./spec/gen/faro.gen.yaml) using [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen).

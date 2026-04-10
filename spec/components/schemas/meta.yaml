@@ -5,21 +5,30 @@ components:
         description: holds metadata about an app event.
         properties:
           sdk:
+            description: Metadata about the Faro SDK that produced the payload
             $ref: '#/components/schemas/SDK'
           app:
+            description: Metadata about the application
             $ref: '#/components/schemas/App'
           user:
+            description: Metadata about the end user
             $ref: '#/components/schemas/User'
           session:
+            description: Metadata about the browser/app session
             $ref: '#/components/schemas/Session'
           page:
+            description: Metadata about the current web page
             $ref: '#/components/schemas/Page'
           browser:
+            description: Metadata about the browser
             $ref: '#/components/schemas/Browser'
           k6:
+            description: Metadata indicating whether the session runs in k6 browser
             $ref: '#/components/schemas/K6'
           view:
+            description: Metadata about the current view/screen
             $ref: '#/components/schemas/View'
           geo:
+            description: Geo information (populated server-side by the receiver)
             $ref: '#/components/schemas/Geo'
         x-go-type-skip-optional-pointer: true

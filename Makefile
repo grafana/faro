@@ -21,7 +21,7 @@ clean-go:
 	@rm -f $(genGo)
 
 install-go-dependencies:
-	go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+	go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.6.0
 
 build-go: merge-specs clean-go
 	@echo "Building go generated file: $(genGo)"
@@ -31,6 +31,12 @@ build-go: merge-specs clean-go
 	@echo "Running go mod tidy in $(buildDir)/go"
 	@cd $(buildDir)/go && go mod tidy && cd ../..
 	@echo "Done"
+
+build-image:
+	docker build -t faro-build -f Dockerfile.build .
+
+build-all-docker: build-image
+	docker run --rm --user $(shell id -u):$(shell id -g) -e HOME=/tmp -e GOPATH=/tmp/go -v "$(PWD):/workspace" faro-build make build-all
 
 # TODO finalize ts types generation and uncomment this part
 build-all: build-go # build-ts

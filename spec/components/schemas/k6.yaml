@@ -6,5 +6,6 @@ components:
       properties:
         isK6Browser:
           type: boolean
+          description: '`true` when running inside a k6 browser session'
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

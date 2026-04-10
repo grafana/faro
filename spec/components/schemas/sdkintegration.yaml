@@ -6,7 +6,9 @@ components:
       properties:
         name:
           type: string
+          description: Integration name
           x-go-type-skip-optional-pointer: true
         version:
           type: string
+          description: Integration version
           x-go-type-skip-optional-pointer: true

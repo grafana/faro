@@ -8,20 +8,26 @@ components:
       properties:
         attributes:
           type: object
+          description: Arbitrary event attributes
           additionalProperties:
             type: string
           x-go-type-skip-optional-pointer: true
         domain:
           type: string
+          description: Event domain / category
           x-go-type-skip-optional-pointer: true
         name:
           type: string
+          description: Event name
         timestamp:
           type: string
+          description: Time the event occurred
           format: date-time
           x-go-type-skip-optional-pointer: true
         trace:
+          description: Associated trace and span IDs
           $ref: "#/components/schemas/TraceContext"
         action:
+          description: Associated user action
           $ref: "#/components/schemas/Action"
       x-go-type-skip-optional-pointer: true

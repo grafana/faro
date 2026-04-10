@@ -1,0 +1,7 @@
+FROM golang:1.24
+
+RUN apt-get update && apt-get install -y python3 python3-pip jq && rm -rf /var/lib/apt/lists/*
+RUN pip3 install yq==3.4.3 --break-system-packages
+RUN go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.6.0
+
+WORKDIR /workspace

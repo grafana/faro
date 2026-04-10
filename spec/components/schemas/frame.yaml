@@ -6,17 +6,22 @@ components:
       properties:
         colno:
           type: integer
+          description: Column number
           x-go-type-skip-optional-pointer: true
         filename:
           type: string
+          description: Source file name or URL
           x-go-type-skip-optional-pointer: true
         function:
           type: string
+          description: Function name
           x-go-type-skip-optional-pointer: true
         lineno:
           type: integer
+          description: Line number
           x-go-type-skip-optional-pointer: true
         module:
           type: string
+          description: Module name
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
