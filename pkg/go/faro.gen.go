@@ -100,6 +100,9 @@ type App struct {
 	// Environment Deployment environment (e.g. `production`, `staging`)
 	Environment string `json:"environment,omitempty"`
 
+	// InstallationID Per-installation identifier (OTel: app.installation.id). Identical across launches of the same installed app; resets on uninstall/reinstall. Privacy-preserving alternative to device.id. On iOS, typically sourced from identifierForVendor.
+	InstallationID string `json:"installationId,omitempty"`
+
 	// Name Application name
 	Name string `json:"name,omitempty"`
 
