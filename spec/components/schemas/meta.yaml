@@ -22,6 +22,12 @@ components:
           browser:
             description: Metadata about the browser
             $ref: '#/components/schemas/Browser'
+          device:
+            description: Metadata about the device
+            $ref: '#/components/schemas/Device'
+          os:
+            description: Metadata about the operating system
+            $ref: '#/components/schemas/OS'
           k6:
             description: Metadata indicating whether the session runs in k6 browser
             $ref: '#/components/schemas/K6'

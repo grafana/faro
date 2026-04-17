@@ -163,6 +163,27 @@ type Browser_Brands struct {
 	union json.RawMessage
 }
 
+// Device holds metadata about the device the app runs on.
+type Device struct {
+	// Brand Consumer-facing brand. E.g. Google Pixel, Samsung Galaxy.
+	Brand string `json:"brand,omitempty"`
+
+	// IsPhysical Whether this is a physical device (true) or emulator/simulator (false).
+	IsPhysical bool `json:"is_physical,omitempty"`
+
+	// Manufacturer Device manufacturer (OTel: device.manufacturer). E.g. Apple, Samsung.
+	Manufacturer string `json:"manufacturer,omitempty"`
+
+	// ModelIdentifier Machine-readable model ID (OTel: device.model.identifier). E.g. iPhone3,4, SM-G920F.
+	ModelIdentifier string `json:"model_identifier,omitempty"`
+
+	// ModelName Human-readable model name (OTel: device.model.name). E.g. iPhone 6s Plus.
+	ModelName string `json:"model_name,omitempty"`
+
+	// Type Device form factor. E.g. mobile, tablet.
+	Type string `json:"type,omitempty"`
+}
+
 // Event holds RUM event data.
 type Event struct {
 	// Action holds data about user action events. These are events that are directly related to user interactions as well as the parent action itself
@@ -317,11 +338,17 @@ type Meta struct {
 	// Browser holds metadata about a client's browser.
 	Browser Browser `json:"browser,omitempty"`
 
+	// Device holds metadata about the device the app runs on.
+	Device Device `json:"device,omitempty"`
+
 	// Geo holds metadata about a client's geo.
 	Geo Geo `json:"geo,omitempty"`
 
 	// K6 holds metadata about whether or not the run happened in a K6 browser.
 	K6 K6 `json:"k6,omitempty"`
+
+	// Os holds metadata about the operating system the app runs on.
+	Os OS `json:"os,omitempty"`
 
 	// Page holds metadata about the web page event originates from.
 	Page Page `json:"page,omitempty"`
@@ -337,6 +364,21 @@ type Meta struct {
 
 	// View holds metadata about a view.
 	View View `json:"view,omitempty"`
+}
+
+// OS holds metadata about the operating system the app runs on.
+type OS struct {
+	// BuildID OS build identifier (OTel: os.build_id). E.g. 22G91, TQ3A.230901.001.
+	BuildID string `json:"build_id,omitempty"`
+
+	// Detail Human-readable OS version detail (OTel: os.description). Richer than name+version alone.
+	Detail string `json:"detail,omitempty"`
+
+	// Name OS name (OTel: os.name). E.g. iOS, Android, Windows, macOS.
+	Name string `json:"name,omitempty"`
+
+	// Version OS version string (OTel: os.version). E.g. 18.1, 15.
+	Version string `json:"version,omitempty"`
 }
 
 // Overrides represents session override metadata.
