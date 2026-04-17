@@ -214,6 +214,9 @@ type Exception struct {
 	Action  Action           `json:"action,omitempty"`
 	Context ExceptionContext `json:"context,omitempty"`
 
+	// Fatal Whether this exception caused app termination (crash, ANR, OOM). Defaults to false when not set. Web exceptions are typically non-fatal; mobile SDKs set this for native crash reports.
+	Fatal bool `json:"fatal,omitempty"`
+
 	// Fingerprint Custom grouping fingerprint
 	Fingerprint string `json:"fingerprint,omitempty"`
 
