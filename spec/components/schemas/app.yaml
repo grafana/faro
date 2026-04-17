@@ -12,6 +12,14 @@ components:
           type: string
           description: Deployment environment (e.g. `production`, `staging`)
           x-go-type-skip-optional-pointer: true
+        installationId:
+          type: string
+          description: >
+            Per-installation identifier (OTel: app.installation.id).
+            Identical across launches of the same installed app; resets on
+            uninstall/reinstall. Privacy-preserving alternative to device.id.
+            On iOS, typically sourced from identifierForVendor.
+          x-go-type-skip-optional-pointer: true
         name:
           type: string
           description: Application name
