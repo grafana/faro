@@ -264,6 +264,14 @@ components:
           type: string
           description: Exception class or type name
           x-go-type-skip-optional-pointer: true
+        fatal:
+          type: boolean
+          description: 'Whether this exception caused app termination (crash, ANR,
+            OOM). Defaults to false when not set. Web exceptions are typically non-fatal;
+            mobile SDKs set this for native crash reports.
+
+            '
+          x-go-type-skip-optional-pointer: true
         fingerprint:
           type: string
           description: Custom grouping fingerprint
