@@ -1,0 +1,31 @@
+components:
+  schemas:
+    Device:
+      type: object
+      description: holds metadata about the device the app runs on.
+      properties:
+        manufacturer:
+          type: string
+          description: "Device manufacturer (OTel: device.manufacturer). E.g. Apple, Samsung."
+          x-go-type-skip-optional-pointer: true
+        model_identifier:
+          type: string
+          description: "Machine-readable model ID (OTel: device.model.identifier). E.g. iPhone3,4, SM-G920F."
+          x-go-type-skip-optional-pointer: true
+        model_name:
+          type: string
+          description: "Human-readable model name (OTel: device.model.name). E.g. iPhone 6s Plus."
+          x-go-type-skip-optional-pointer: true
+        brand:
+          type: string
+          description: "Consumer-facing brand. E.g. Google Pixel, Samsung Galaxy."
+          x-go-type-skip-optional-pointer: true
+        is_physical:
+          type: boolean
+          description: "Whether this is a physical device (true) or emulator/simulator (false)."
+          x-go-type-skip-optional-pointer: true
+        type:
+          type: string
+          description: "Device form factor. E.g. mobile, tablet."
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

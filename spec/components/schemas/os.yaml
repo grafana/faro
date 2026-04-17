@@ -1,0 +1,23 @@
+components:
+  schemas:
+    OS:
+      type: object
+      description: holds metadata about the operating system the app runs on.
+      properties:
+        name:
+          type: string
+          description: "OS name (OTel: os.name). E.g. iOS, Android, Windows, macOS."
+          x-go-type-skip-optional-pointer: true
+        version:
+          type: string
+          description: "OS version string (OTel: os.version). E.g. 18.1, 15."
+          x-go-type-skip-optional-pointer: true
+        build_id:
+          type: string
+          description: "OS build identifier (OTel: os.build_id). E.g. 22G91, TQ3A.230901.001."
+          x-go-type-skip-optional-pointer: true
+        detail:
+          type: string
+          description: "Human-readable OS version detail (OTel: os.description). Richer than name+version alone."
+          x-go-type-skip-optional-pointer: true
+      x-go-type-skip-optional-pointer: true

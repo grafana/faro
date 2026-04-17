@@ -34,7 +34,7 @@ make serve              # Swagger UI for the generated spec
 - Generates models only (`generate.models: true`) — no server stubs or client code
 - Package `faro`, output `pkg/go/faro.gen.go`
 - `skip-prune: true` — keeps types that aren't directly referenced in paths
-- `name-normalizer: ToCamelCaseWithInitialisms` — so `span_id` → `SpanId`, `asn_org` → `ASNOrg`
+- `name-normalizer: ToCamelCaseWithInitialisms` — so `span_id` → `SpanID`, `asn_org` → `ASNOrg`, `build_id` → `BuildID`
 - `always-prefix-enum-values: true` — enum values get the type name as prefix
 
 ## Key schema conventions
@@ -42,6 +42,10 @@ make serve              # Swagger UI for the generated spec
 - `x-go-type-skip-optional-pointer: true` is used extensively to generate value types instead of pointers
 - `x-omitempty: false` on `TraceContext` fields ensures zero-value span/trace IDs are always serialized
 - `Browser.brands` uses `oneOf: [BrandsString, BrandsArray]` — oapi-codegen generates a union type with `As*/From*/Merge*` helpers
+
+**Mixed property-name casing.** The repo has both styles: `browser.yaml` / `app.yaml` use camelCase (`bundleId`, `userAgent`, `viewportWidth`), while `geo.yaml` / `tracecontext.yaml` use snake_case (`asn_org`, `span_id`, `trace_id`). **Prefer snake_case for new schemas that map to OTel semconv** — it mirrors OTel attribute keys on the wire and `ToCamelCaseWithInitialisms` correctly renders them in Go (`SpanID`, `ASNOrg`, `BuildID`). Match the surrounding style when extending an existing schema.
+
+**`x-go-name` is silently ignored next to `$ref`.** Per OpenAPI 3.0, siblings of `$ref` are ignored by resolvers, so `x-go-name: Foo` on a `$ref` property does nothing — the Go field name is derived from the property key via the normalizer. The only clean fix is an `allOf: [$ref: ...]` wrapper (siblings survive composition), but that can produce a wrapper type. `x-go-name` works fine on non-ref properties (see `Browser.os` string, which uses `x-go-name: OS` successfully).
 
 ## Tooling versions
 
