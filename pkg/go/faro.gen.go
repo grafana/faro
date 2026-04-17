@@ -347,8 +347,8 @@ type Meta struct {
 	// K6 holds metadata about whether or not the run happened in a K6 browser.
 	K6 K6 `json:"k6,omitempty"`
 
-	// Os holds metadata about the operating system the app runs on.
-	Os OS `json:"os,omitempty"`
+	// OS Metadata about the operating system
+	OS OS `json:"os,omitempty"`
 
 	// Page holds metadata about the web page event originates from.
 	Page Page `json:"page,omitempty"`
