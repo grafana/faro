@@ -282,6 +282,9 @@ type Geo struct {
 type K6 struct {
 	// IsK6Browser `true` when running inside a k6 browser session
 	IsK6Browser bool `json:"isK6Browser,omitempty"`
+
+	// TestRunID k6 test run identifier when running inside a k6 browser session
+	TestRunID string `json:"testRunId,omitempty"`
 }
 
 // Kind defines model for Kind.

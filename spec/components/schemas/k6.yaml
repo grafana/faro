@@ -8,4 +8,9 @@ components:
           type: boolean
           description: '`true` when running inside a k6 browser session'
           x-go-type-skip-optional-pointer: true
+        testRunId:
+          type: string
+          description: k6 test run identifier when running inside a k6 browser session
+          x-go-type-skip-optional-pointer: true
+          x-go-name: TestRunID
       x-go-type-skip-optional-pointer: true
