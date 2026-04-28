@@ -3,7 +3,7 @@ module github.com/grafana/faro/pkg/exporter/faroexporter
 go 1.25.0
 
 require (
-	github.com/grafana/faro/pkg/go v0.0.0-20250314155512-06a06da3b8bc
+	github.com/grafana/faro/pkg/go v0.0.0-20260428130626-a7c388d31034
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/faro v0.123.0
 	go.opentelemetry.io/collector/component v0.119.0
 	go.opentelemetry.io/collector/component/componenttest v0.119.0
@@ -66,7 +66,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/oapi-codegen/runtime v1.1.1 // indirect
+	github.com/oapi-codegen/runtime v1.3.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/collector/config/confighttp v0.119.0

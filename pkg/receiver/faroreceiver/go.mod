@@ -3,7 +3,7 @@ module github.com/grafana/faro/pkg/receiver/faroreceiver
 go 1.25.0
 
 require (
-	github.com/grafana/faro/pkg/go v0.0.0-20250314155512-06a06da3b8bc
+	github.com/grafana/faro/pkg/go v0.0.0-20260428130626-a7c388d31034
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/faro v0.123.0
 	go.opentelemetry.io/collector/config/confighttp v0.119.0
 	go.opentelemetry.io/collector/pdata/pprofile v0.119.0
@@ -30,7 +30,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect
-	github.com/oapi-codegen/runtime v1.1.1 // indirect
+	github.com/oapi-codegen/runtime v1.3.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
