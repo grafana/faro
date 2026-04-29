@@ -74,7 +74,7 @@ require (
 	go.opentelemetry.io/collector/config/configretry v1.25.0
 	go.opentelemetry.io/collector/config/configtelemetry v0.119.0 // indirect
 	go.opentelemetry.io/collector/confmap v1.56.0
-	go.opentelemetry.io/collector/consumer/consumererror v0.119.0
+	go.opentelemetry.io/collector/consumer/consumererror v0.150.0
 	go.opentelemetry.io/collector/extension v0.119.0 // indirect
 	go.opentelemetry.io/collector/featuregate v1.56.0 // indirect
 	go.opentelemetry.io/collector/pdata/pprofile v0.150.0 // indirect
