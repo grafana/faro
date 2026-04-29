@@ -7,7 +7,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/faro v0.123.0
 	go.opentelemetry.io/collector/component v0.120.0
 	go.opentelemetry.io/collector/component/componenttest v0.119.0
-	go.opentelemetry.io/collector/config/configcompression v1.25.0
+	go.opentelemetry.io/collector/config/configcompression v1.56.0
 	go.opentelemetry.io/collector/consumer v1.25.0
 	go.opentelemetry.io/collector/exporter v0.119.0
 	go.opentelemetry.io/collector/exporter/exportertest v0.119.0
