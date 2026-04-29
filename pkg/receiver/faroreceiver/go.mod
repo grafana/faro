@@ -4,9 +4,9 @@ go 1.25.0
 
 require (
 	github.com/grafana/faro/pkg/go v0.0.0-20260428130626-a7c388d31034
-	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/faro v0.123.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/pkg/translator/faro v0.150.0
 	go.opentelemetry.io/collector/config/confighttp v0.119.0
-	go.opentelemetry.io/collector/pdata/pprofile v0.119.0
+	go.opentelemetry.io/collector/pdata/pprofile v0.150.0
 	go.uber.org/goleak v1.3.0
 )
 
@@ -16,7 +16,7 @@ require (
 	github.com/buger/jsonparser v1.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-logfmt/logfmt v0.6.0 // indirect
+	github.com/go-logfmt/logfmt v0.6.1 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
@@ -34,7 +34,7 @@ require (
 	github.com/oapi-codegen/runtime v1.3.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
-	github.com/zeebo/xxh3 v1.0.2 // indirect
+	github.com/zeebo/xxh3 v1.1.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/collector/consumer/consumererror v0.119.0 // indirect
 	go.opentelemetry.io/collector/extension/extensionauth v1.42.0 // indirect
@@ -76,7 +76,7 @@ require (
 	go.opentelemetry.io/collector/consumer/xconsumer v0.119.0 // indirect
 	go.opentelemetry.io/collector/extension v1.42.0 // indirect
 	go.opentelemetry.io/collector/extension/auth v0.119.0 // indirect
-	go.opentelemetry.io/collector/pdata v1.42.0
+	go.opentelemetry.io/collector/pdata v1.56.0
 	go.opentelemetry.io/collector/receiver v0.119.0
 	go.opentelemetry.io/collector/receiver/receivertest v0.119.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.59.0 // indirect
@@ -85,10 +85,10 @@ require (
 	go.opentelemetry.io/otel/trace v1.43.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.1
-	golang.org/x/net v0.48.0 // indirect
+	golang.org/x/net v0.51.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
-	golang.org/x/text v0.32.0 // indirect
+	golang.org/x/text v0.34.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260420184626-e10c466a9529
-	google.golang.org/grpc v1.79.3
+	google.golang.org/grpc v1.80.0
 	google.golang.org/protobuf v1.36.11 // indirect
 )
