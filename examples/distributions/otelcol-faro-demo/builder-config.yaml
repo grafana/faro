@@ -6,9 +6,7 @@ dist:
   output_path: ./otelcol-faro-demo
 
 exporters:
-  - gomod:
-      github.com/grafana/faro/pkg/exporter/faroexporter 3524abe362b728e889f0b701a0cc737bd67a545b
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/faroexporter v0.151.0
 
 receivers:
-  - gomod:
-      github.com/grafana/faro/pkg/receiver/faroreceiver 3524abe362b728e889f0b701a0cc737bd67a545b
+  - gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/faroreceiver v0.151.0
