@@ -19,6 +19,7 @@ require (
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.2 // indirect
+	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
@@ -71,7 +72,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.11.1
 	go.opentelemetry.io/collector/config/confighttp v0.119.0
-	go.opentelemetry.io/collector/config/configretry v1.25.0
+	go.opentelemetry.io/collector/config/configretry v1.56.0
 	go.opentelemetry.io/collector/config/configtelemetry v0.119.0 // indirect
 	go.opentelemetry.io/collector/confmap v1.56.0
 	go.opentelemetry.io/collector/consumer/consumererror v0.119.0
