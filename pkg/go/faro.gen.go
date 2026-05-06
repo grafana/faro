@@ -458,7 +458,7 @@ type Session struct {
 	// Attributes Arbitrary session attributes
 	Attributes map[string]string `json:"attributes,omitempty"`
 
-	// ID Session identifier
+	// ID Session identifier. Must match `^[a-zA-Z0-9_.@:-]+$` and be at most 128 characters long.
 	ID string `json:"id,omitempty"`
 
 	// Overrides represents session override metadata.

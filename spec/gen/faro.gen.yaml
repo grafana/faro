@@ -626,7 +626,8 @@ components:
       properties:
         id:
           type: string
-          description: Session identifier
+          description: Session identifier. Must match `^[a-zA-Z0-9_.@:-]+$` and be
+            at most 128 characters long.
           x-go-type-skip-optional-pointer: true
         attributes:
           type: object
