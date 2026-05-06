@@ -458,7 +458,12 @@ type Session struct {
 	// Attributes Arbitrary session attributes
 	Attributes map[string]string `json:"attributes,omitempty"`
 
-	// ID Session identifier
+	// ID Session identifier. Receivers enforce a format constraint: the value
+	// must match `^[a-zA-Z0-9_.@:-]+$` (alphanumeric plus `_`, `.`, `@`,
+	// `:`, `-`) and be at most 128 characters long. Payloads with a
+	// session ID that does not satisfy these constraints are rejected.
+	// Because `.` and `@` are allowed, session IDs may resemble email
+	// addresses; treat them as potential PII and never log raw values.
 	ID string `json:"id,omitempty"`
 
 	// Overrides represents session override metadata.
