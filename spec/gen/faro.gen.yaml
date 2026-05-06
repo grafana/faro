@@ -18,6 +18,7 @@ paths:
   /collect/{appKey}:
     post:
       operationId: submitPayload
+      security: []
       parameters:
         - name: appKey
           description: 'The application key is provided by your endpoint provider.
