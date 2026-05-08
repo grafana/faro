@@ -2,6 +2,9 @@ paths:
   /collect/{appKey}:
     post:
       operationId: submitPayload
+      # Public ingest endpoint: the appKey path parameter is the only identifier;
+      # no auth scheme is required, so declare empty security explicitly.
+      security: []
       parameters:
         - name: appKey
           description: |
