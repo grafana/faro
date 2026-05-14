@@ -100,6 +100,9 @@ type App struct {
 	// Environment Deployment environment (e.g. `production`, `staging`)
 	Environment string `json:"environment,omitempty"`
 
+	// GitHash Git hash of the application source code this telemetry was generated from
+	GitHash string `json:"gitHash,omitempty"`
+
 	// InstallationID Per-installation identifier (OTel: app.installation.id). Identical across launches of the same installed app; resets on uninstall/reinstall. Privacy-preserving alternative to device.id. On iOS, typically sourced from identifierForVendor.
 	InstallationID string `json:"installationId,omitempty"`
 
