@@ -79,7 +79,12 @@ components:
       properties:
         bundleId:
           type: string
-          description: Bundle identifier (used by mobile apps)
+          description: Bundle identifier (used by apps bundled with Faro bundler plugins)
+          x-go-type-skip-optional-pointer: true
+        gitHash:
+          type: string
+          description: Git hash of the application source code this telemetry was
+            generated from
           x-go-type-skip-optional-pointer: true
         environment:
           type: string
