@@ -5,7 +5,7 @@ go 1.25.0
 toolchain go1.26.3
 
 require (
-	github.com/oapi-codegen/runtime v1.4.0
+	github.com/oapi-codegen/runtime v1.4.1
 	go.opentelemetry.io/collector/pdata v1.58.0
 )
 
