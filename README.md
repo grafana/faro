@@ -52,3 +52,7 @@ make build-all
 ### Go
 
 [/pkg/go](./pkg/go) contains HTTP Models in Go generated from the [OpenAPI specification](./spec/gen/faro.gen.yaml) using [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen).
+
+## Security
+
+CodeQL static analysis runs on every push, pull request, and weekly. Findings are published to the repository [code scanning alerts](https://github.com/grafana/faro/security/code-scanning) page.
