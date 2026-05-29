@@ -15,6 +15,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Lint spec
-        uses: mhiew/redoc-lint-github-action@1b3526395495e5c1346ebb81a67813aee757e86b # v4
-        with:
-          args: 'spec/gen/faro.gen.yaml'
+        # Pinned to 1.9.0 to match what mhiew/redoc-lint-github-action@v4 ran
+        # before this step was inlined; bumps are a separate change.
+        shell: bash
+        run: npx --yes @redocly/cli@1.9.0 lint spec/gen/faro.gen.yaml
