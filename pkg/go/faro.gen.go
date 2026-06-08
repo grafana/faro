@@ -94,7 +94,7 @@ type Action struct {
 
 // App holds metadata about the application event originates from.
 type App struct {
-	// BundleID Bundle identifier (used by apps bundled with Faro bundler plugins)
+	// BundleID Bundle identifier (used by web apps bundled with Faro bundler plugins and mobile Android symbolication to encode build identity "{applicationId}@{versionCode}@{versionName}" (e.g. com.example.app@42@1.0.0) matching the symbols upload path and server-side R8/native retrace lookup key).
 	BundleID string `json:"bundleId,omitempty"`
 
 	// Environment Deployment environment (e.g. `production`, `staging`)

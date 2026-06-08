@@ -6,7 +6,11 @@ components:
       properties:
         bundleId:
           type: string
-          description: Bundle identifier (used by apps bundled with Faro bundler plugins)
+          description: >
+            Bundle identifier (used by web apps bundled with Faro bundler plugins
+            and mobile Android symbolication to encode build identity
+            "{applicationId}@{versionCode}@{versionName}" (e.g. com.example.app@42@1.0.0)
+            matching the symbols upload path and server-side R8/native retrace lookup key).
           x-go-type-skip-optional-pointer: true
         gitHash:
           type: string
