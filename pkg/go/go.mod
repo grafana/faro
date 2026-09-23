@@ -3,7 +3,7 @@ module github.com/grafana/faro/pkg/go
 go 1.26.4
 
 require (
-	github.com/oapi-codegen/runtime v1.6.0
+	github.com/oapi-codegen/runtime v1.7.0
 	go.opentelemetry.io/collector/pdata v1.63.0
 )
 
