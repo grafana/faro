@@ -39,4 +39,7 @@ components:
           geo:
             description: Geo information (populated server-side by the receiver)
             $ref: '#/components/schemas/Geo'
+          sampling:
+            description: Adaptive sampling verdict for the session (absent when the SDK does not sample by rule)
+            $ref: '#/components/schemas/Sampling'
         x-go-type-skip-optional-pointer: true
