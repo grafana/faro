@@ -92,6 +92,27 @@ func (e LogLevel) Valid() bool {
 	}
 }
 
+// Defines values for SamplingKeptBy.
+const (
+	SamplingKeptByBoth    SamplingKeptBy = "both"
+	SamplingKeptBySample  SamplingKeptBy = "sample"
+	SamplingKeptByTrigger SamplingKeptBy = "trigger"
+)
+
+// Valid indicates whether the value is a known member of the SamplingKeptBy enum.
+func (e SamplingKeptBy) Valid() bool {
+	switch e {
+	case SamplingKeptByBoth:
+		return true
+	case SamplingKeptBySample:
+		return true
+	case SamplingKeptByTrigger:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for TimeFormat.
 const (
 	TimeFormatRFC3339Milli TimeFormat = "2006-01-02T15:04:05.999Z"
@@ -426,6 +447,22 @@ type Meta struct {
 	// Page holds metadata about the web page event originates from.
 	Page Page `json:"page,omitempty"`
 
+	// Sampling holds the adaptive sampling verdict for the session the payload belongs to.
+	// Stamped by the SDK once per batch body, next to `session`. Absent when the SDK
+	// does not sample by rule. The receiver validates the verdict (recomputes `keyU32`
+	// from `sessionId`, checks ranges and coherence) and never decides or drops on it.
+	//
+	// Seven fields are fixed at the decision point and identical on every body of a
+	// session: `schema`, `sessionId`, `inBaseSample`, `baseRate`, `replayRate`,
+	// `rulesHash`, `keyU32`. The other four (`keptBy`, `keptByRule`, `triggerRate`,
+	// `replayKept`) can only widen afterwards, when a trigger rule fires.
+	//
+	// Every field is optional in the schema so a partial verdict still decodes; the
+	// receiver flags it as invalid. Fields are generated as pointers on purpose, so a
+	// missing field is distinguishable from a zero value. The rules document that
+	// produces a verdict is specified in `spec/sampling/`.
+	Sampling *Sampling `json:"sampling,omitempty"`
+
 	// SDK holds metadata about the app agent that produced the event.
 	SDK SDK `json:"sdk,omitempty"`
 
@@ -534,6 +571,58 @@ type SDKIntegration struct {
 	// Version Integration version
 	Version string `json:"version,omitempty"`
 }
+
+// Sampling holds the adaptive sampling verdict for the session the payload belongs to.
+// Stamped by the SDK once per batch body, next to `session`. Absent when the SDK
+// does not sample by rule. The receiver validates the verdict (recomputes `keyU32`
+// from `sessionId`, checks ranges and coherence) and never decides or drops on it.
+//
+// Seven fields are fixed at the decision point and identical on every body of a
+// session: `schema`, `sessionId`, `inBaseSample`, `baseRate`, `replayRate`,
+// `rulesHash`, `keyU32`. The other four (`keptBy`, `keptByRule`, `triggerRate`,
+// `replayKept`) can only widen afterwards, when a trigger rule fires.
+//
+// Every field is optional in the schema so a partial verdict still decodes; the
+// receiver flags it as invalid. Fields are generated as pointers on purpose, so a
+// missing field is distinguishable from a zero value. The rules document that
+// produces a verdict is specified in `spec/sampling/`.
+type Sampling struct {
+	// BaseRate The base rate that applied to this session, in [0, 1]. Estimates weight by `1 / baseRate`.
+	BaseRate *float64 `json:"baseRate,omitempty"`
+
+	// InBaseSample Whether the base-rate roll kept the session (`keyU32 / 2^32 < baseRate`).
+	InBaseSample *bool `json:"inBaseSample,omitempty"`
+
+	// KeptBy Why the session is kept. `null` means not kept.
+	KeptBy *SamplingKeptBy `json:"keptBy,omitempty"`
+
+	// KeptByRule Id of the trigger rule that fired. `null` unless `keptBy` is `trigger` or `both`.
+	KeptByRule *string `json:"keptByRule,omitempty"`
+
+	// KeyU32 `keyU32(sessionId)`: FNV-1a 32-bit over the UTF-8 bytes of the session id, then the MurmurHash3 fmix32 finalizer. Unsigned 32-bit, so a 64-bit integer here. A check value the receiver recomputes, not an id.
+	KeyU32 *int64 `json:"keyU32,omitempty"`
+
+	// ReplayKept Whether replay was kept, by base rate and `replayRate` or by a trigger. Recordings with `false` are discarded.
+	ReplayKept *bool `json:"replayKept,omitempty"`
+
+	// ReplayRate The base rule's `replayRate`, in [0, 1], so the receiver can check the replay roll. `null` unless a `keep_session_and_replay` base rule applied.
+	ReplayRate *float64 `json:"replayRate,omitempty"`
+
+	// RulesHash FNV-1a 64-bit hash, 16 hex characters, of the canonicalised rules document that produced this verdict.
+	RulesHash *string `json:"rulesHash,omitempty"`
+
+	// Schema Version of the verdict format (not of the rules document). Currently `1`.
+	Schema *int `json:"schema,omitempty"`
+
+	// SessionID The session id as it was at the decision point. Identity for counting and grouping; stays the same if the SDK later moves the session to a new id.
+	SessionID *string `json:"sessionId,omitempty"`
+
+	// TriggerRate The firing rule's `triggerRate`, in [0, 1]. `null` if the rule has none.
+	TriggerRate *float64 `json:"triggerRate,omitempty"`
+}
+
+// SamplingKeptBy Why the session is kept. `null` means not kept.
+type SamplingKeptBy string
 
 // Session holds metadata about the browser session the event originates from.
 type Session struct {
