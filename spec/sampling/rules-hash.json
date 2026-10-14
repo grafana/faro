@@ -272,6 +272,30 @@
     "rulesHash": "53674d9f30d4ba55"
   },
   {
+    "name": "integer-like-keys",
+    "note": "Keys that look like integers sort as strings (\"1\", \"10\", \"2\"). JavaScript objects reorder such keys numerically, so a canonicaliser must write from the sorted key list, never rebuild an object and JSON.stringify it.",
+    "document": {
+      "schema": "faro.sampling.rules/v1",
+      "rules": [
+        {
+          "id": "ints",
+          "trigger": {
+            "type": "custom_event",
+            "match": {
+              "1": "c",
+              "2": "b",
+              "10": "a",
+              "name": "x"
+            }
+          },
+          "action": "keep_session"
+        }
+      ]
+    },
+    "canonical": "{\"rules\":[{\"action\":\"keep_session\",\"id\":\"ints\",\"trigger\":{\"match\":{\"1\":\"c\",\"10\":\"a\",\"2\":\"b\",\"name\":\"x\"},\"type\":\"custom_event\"}}],\"schema\":\"faro.sampling.rules/v1\"}",
+    "rulesHash": "019db19db777fd8c"
+  },
+  {
     "name": "empty-rules",
     "note": "The smallest valid document.",
     "document": {

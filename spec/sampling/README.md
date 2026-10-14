@@ -30,9 +30,9 @@ Every multiply wraps mod 2^32 and every shift is a logical right shift. A roll p
 Each roll hashes a different input, so the three are independent of each other and recomputable from the verdict:
 
 ```
-base roll:     keyU32(sessionId)                                  < baseRate
-replay roll:   keyU32(sessionId + "\0" + "replay" + "\0")          < replayRate
-trigger roll:  keyU32(sessionId + "\0" + "trigger" + "\0" + ruleId) < triggerRate
+base roll:     keyU32(sessionId)                                   / 2^32 < baseRate
+replay roll:   keyU32(sessionId + "\0" + "replay" + "\0")           / 2^32 < replayRate
+trigger roll:  keyU32(sessionId + "\0" + "trigger" + "\0" + ruleId) / 2^32 < triggerRate
 ```
 
 `\0` is the NUL byte. Session ids match `^[a-zA-Z0-9_.@:-]+$` and rule ids `^[A-Za-z0-9_-]{1,64}$`, so neither can contain NUL, and no two of the three inputs can ever be the same string. In particular a rule with `id: "replay"` rolls on `sessionId\0trigger\0replay`, not on the replay roll's input.
@@ -43,6 +43,6 @@ trigger roll:  keyU32(sessionId + "\0" + "trigger" + "\0" + ruleId) < triggerRat
 
 Normalization strips the two spellings that mean the same as absent: an explicit `"trigger": null` and an explicit `"scope": {}`. Nothing else is rewritten.
 
-The canonical form is [RFC 8785 (JSON Canonicalization Scheme)](https://www.rfc-editor.org/rfc/rfc8785): object keys sorted by UTF-16 code units; no whitespace; strings escaped as ECMAScript `JSON.stringify` does (only `"`, `\` and U+0000 to U+001F are escaped, with `\b \f \n \r \t` short forms and lowercase `\u00xx` for the rest; no HTML escaping; non-ASCII written literally); numbers formatted as ECMAScript `Number.prototype.toString` (shortest round-trip digits, plain decimal for 1e-6 ≤ |x| < 1e21, otherwise `d.ddde±x` with no zero padding in the exponent). In JavaScript, `JSON.stringify` with keys sorted by the default `Array.prototype.sort` produces exactly this. Other languages have to be told: Go's `encoding/json`, for example, escapes `<` as `<`, formats `1e-7` as `1e-07`, and sorts keys by bytes. The documents in `rules-hash.json` cover each of those.
+The canonical form is [RFC 8785 (JSON Canonicalization Scheme)](https://www.rfc-editor.org/rfc/rfc8785): object keys sorted by UTF-16 code units; no whitespace; strings escaped as ECMAScript `JSON.stringify` does (only `"`, `\` and U+0000 to U+001F are escaped, with `\b \f \n \r \t` short forms and lowercase `\u00xx` for the rest; no HTML escaping; non-ASCII written literally); numbers formatted as ECMAScript `Number.prototype.toString` (shortest round-trip digits, plain decimal for 1e-6 ≤ |x| < 1e21, otherwise `d.ddde±x` with no zero padding in the exponent). In JavaScript, `JSON.stringify` gives the right escaping and number formatting for scalars, and the default `Array.prototype.sort` gives the right key order, but the object must be written out key by key from the sorted list. Rebuilding an object and calling `JSON.stringify` on it does not work: JavaScript puts integer-like keys such as `"2"` and `"10"` in numeric order, while JCS sorts them as strings (`"10"` first). Other languages have to be told everything: Go's `encoding/json`, for example, escapes `<` as `\u003c`, formats `1e-7` as `1e-07`, and sorts keys by bytes. The documents in `rules-hash.json` cover each of those.
 
 `rulesHash` is an audit identifier, not a security hash, and it is never an input to the key.
