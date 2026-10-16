@@ -44,6 +44,7 @@ const (
 	LogLevelError   LogLevel = "error"
 	LogLevelInfo    LogLevel = "info"
 	LogLevelTrace   LogLevel = "trace"
+	LogLevelWarn    LogLevel = "warn"
 	LogLevelWarning LogLevel = "warning"
 )
 
@@ -57,6 +58,8 @@ func (e LogLevel) Valid() bool {
 	case LogLevelInfo:
 		return true
 	case LogLevelTrace:
+		return true
+	case LogLevelWarn:
 		return true
 	case LogLevelWarning:
 		return true
@@ -301,7 +304,7 @@ type Log struct {
 	// Context is a string to string map structure that represents the context of a log message.
 	Context LogContext `json:"context,omitempty"`
 
-	// LogLevel log level enum for incoming app logs.
+	// LogLevel log level enum for incoming app logs. Faro SDKs send `warn` for warnings. `warning` is deprecated; it is kept so existing payloads stay valid.
 	LogLevel LogLevel `json:"level,omitempty"`
 
 	// Message Log message text
@@ -317,7 +320,7 @@ type Log struct {
 // LogContext is a string to string map structure that represents the context of a log message.
 type LogContext map[string]string
 
-// LogLevel log level enum for incoming app logs.
+// LogLevel log level enum for incoming app logs. Faro SDKs send `warn` for warnings. `warning` is deprecated; it is kept so existing payloads stay valid.
 type LogLevel string
 
 // Measurement holds the data for user provided measurements.

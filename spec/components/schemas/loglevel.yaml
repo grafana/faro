@@ -2,11 +2,14 @@ components:
   schemas:
     LogLevel:
       type: string
-      description: log level enum for incoming app logs.
+      description: >-
+        log level enum for incoming app logs. Faro SDKs send `warn` for warnings.
+        `warning` is deprecated; it is kept so existing payloads stay valid.
       enum:
         - trace
         - debug
         - info
+        - warn
         - warning
         - error
       x-go-type-skip-optional-pointer: true
