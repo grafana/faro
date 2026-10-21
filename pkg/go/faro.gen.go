@@ -130,7 +130,7 @@ type App struct {
 	// GitHash Git hash of the application source code this telemetry was generated from
 	GitHash string `json:"gitHash,omitempty"`
 
-	// InstallationID Per-installation identifier (OTel: app.installation.id). Identical across launches of the same installed app; resets on uninstall/reinstall. Privacy-preserving alternative to device.id. On iOS, typically sourced from identifierForVendor.
+	// InstallationID Per-installation identifier (OTel: app.installation.id). Identical across launches of the same installed app; usually resets on uninstall, but a restore from app backup can bring the old value back. Privacy-preserving alternative to device.id. On iOS, typically sourced from identifierForVendor, which stays the same after a reinstall while another app from the same vendor is installed.
 	InstallationID string `json:"installationId,omitempty"`
 
 	// Name Application name
@@ -219,8 +219,8 @@ type Device struct {
 	// Manufacturer Device manufacturer (OTel: device.manufacturer). E.g. Apple, Samsung.
 	Manufacturer string `json:"manufacturer,omitempty"`
 
-	// MemoryTotal Total device memory in bytes.
-	MemoryTotal int64 `json:"memory_total,omitempty"`
+	// MemoryTotal Total device memory in whole MB, where 1 MB is 1,048,576 bytes.
+	MemoryTotal int `json:"memory_total,omitempty"`
 
 	// ModelIdentifier Machine-readable model ID (OTel: device.model.identifier). E.g. iPhone3,4, SM-G920F.
 	ModelIdentifier string `json:"model_identifier,omitempty"`

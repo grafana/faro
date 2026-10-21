@@ -52,8 +52,7 @@ components:
           x-go-type-skip-optional-pointer: true
         memory_total:
           type: integer
-          format: int64
-          description: Total device memory in bytes.
+          description: Total device memory in whole MB, where 1 MB is 1,048,576 bytes.
           x-go-type-skip-optional-pointer: true
         # The fields below have no skip-pointer: false and 0 are valid values,
         # and a value type cannot tell them apart from absent.

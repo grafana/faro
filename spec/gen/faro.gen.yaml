@@ -98,9 +98,11 @@ components:
         installationId:
           type: string
           description: 'Per-installation identifier (OTel: app.installation.id). Identical
-            across launches of the same installed app; resets on uninstall/reinstall.
-            Privacy-preserving alternative to device.id. On iOS, typically sourced
-            from identifierForVendor.
+            across launches of the same installed app; usually resets on uninstall,
+            but a restore from app backup can bring the old value back. Privacy-preserving
+            alternative to device.id. On iOS, typically sourced from identifierForVendor,
+            which stays the same after a reinstall while another app from the same
+            vendor is installed.
 
             '
           x-go-type-skip-optional-pointer: true
@@ -243,8 +245,7 @@ components:
           x-go-type-skip-optional-pointer: true
         memory_total:
           type: integer
-          format: int64
-          description: Total device memory in bytes.
+          description: Total device memory in whole MB, where 1 MB is 1,048,576 bytes.
           x-go-type-skip-optional-pointer: true
         battery_level:
           type: integer
