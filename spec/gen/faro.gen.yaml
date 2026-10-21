@@ -216,7 +216,61 @@ components:
           x-go-type-skip-optional-pointer: true
         type:
           type: string
-          description: Device form factor. E.g. mobile, tablet.
+          description: 'Device form factor. E.g. mobile, tablet. SDKs should not send
+            it: Android has no reliable phone-versus-tablet signal. On iOS, the model_identifier
+            prefix (iPhone, iPad) gives the device family.'
+          deprecated: true
+          x-deprecated-reason: SDKs should not send it. On iOS, use the model_identifier
+            prefix.
+          x-go-type-skip-optional-pointer: true
+        arch:
+          type: string
+          description: 'CPU architecture (OTel: host.arch). E.g. arm64, amd64, x86.'
+          x-go-type-skip-optional-pointer: true
+        screen_width:
+          type: integer
+          description: Screen width in physical pixels.
+          x-go-type-skip-optional-pointer: true
+        screen_height:
+          type: integer
+          description: Screen height in physical pixels.
+          x-go-type-skip-optional-pointer: true
+        screen_density:
+          type: number
+          format: double
+          description: Physical pixels per density-independent pixel. E.g. 2.625,
+            3.
+          x-go-type-skip-optional-pointer: true
+        memory_total:
+          type: integer
+          format: int64
+          description: Total device memory in bytes.
+          x-go-type-skip-optional-pointer: true
+        battery_level:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Battery level as a percentage from 0 to 100. Current when the
+            signal is captured.
+        is_charging:
+          type: boolean
+          description: Whether the device is connected to AC, USB, or wireless power,
+            including when full. Current when the signal is captured.
+        low_power_mode:
+          type: boolean
+          description: Whether Android battery saver or iOS Low Power Mode is on.
+            Current when the signal is captured.
+        thermal_state:
+          type: string
+          enum:
+            - nominal
+            - fair
+            - serious
+            - critical
+          description: Thermal state. Current when the signal is captured. iOS reads
+            ProcessInfo.thermalState. Android (API 29 and later) maps PowerManager
+            status NONE to nominal, LIGHT to fair, MODERATE to serious, and SEVERE
+            and above to critical.
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
     Event:
@@ -496,6 +550,9 @@ components:
           x-go-name: OS
           allOf:
             - $ref: '#/components/schemas/OS'
+        network:
+          description: Metadata about the network connection
+          $ref: '#/components/schemas/Network'
         k6:
           description: Metadata indicating whether the session runs in k6 browser
           $ref: '#/components/schemas/K6'
@@ -505,6 +562,31 @@ components:
         geo:
           description: Geo information (populated server-side by the receiver)
           $ref: '#/components/schemas/Geo'
+      x-go-type-skip-optional-pointer: true
+    Network:
+      type: object
+      description: holds metadata about the network connection of the device. Values
+        are current when the signal is captured.
+      properties:
+        connection_type:
+          type: string
+          description: 'Connection type (OTel: network.connection.type). E.g. wifi,
+            cell, wired, unavailable.'
+          x-go-type-skip-optional-pointer: true
+        connection_subtype:
+          type: string
+          description: 'Cellular technology (OTel: network.connection.subtype). E.g.
+            lte, nr.'
+          x-go-type-skip-optional-pointer: true
+        carrier_name:
+          type: string
+          description: 'Mobile carrier name (OTel: network.carrier.name). Android
+            only.'
+          x-go-type-skip-optional-pointer: true
+        reachable:
+          type: boolean
+          description: 'Whether the internet is reachable. Distinct from connection_type:
+            a wifi connection can have no internet access.'
       x-go-type-skip-optional-pointer: true
     OS:
       type: object
@@ -526,6 +608,11 @@ components:
           type: string
           description: 'Human-readable OS version detail (OTel: os.description). Richer
             than name+version alone.'
+          x-go-type-skip-optional-pointer: true
+        api_level:
+          type: integer
+          description: 'Android API level (OTel: android.os.api_level). E.g. 34. Android
+            only.'
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
     Overrides:

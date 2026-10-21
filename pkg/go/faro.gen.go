@@ -11,6 +11,30 @@ import (
 	ptrace "go.opentelemetry.io/collector/pdata/ptrace"
 )
 
+// Defines values for DeviceThermalState.
+const (
+	DeviceThermalStateCritical DeviceThermalState = "critical"
+	DeviceThermalStateFair     DeviceThermalState = "fair"
+	DeviceThermalStateNominal  DeviceThermalState = "nominal"
+	DeviceThermalStateSerious  DeviceThermalState = "serious"
+)
+
+// Valid indicates whether the value is a known member of the DeviceThermalState enum.
+func (e DeviceThermalState) Valid() bool {
+	switch e {
+	case DeviceThermalStateCritical:
+		return true
+	case DeviceThermalStateFair:
+		return true
+	case DeviceThermalStateNominal:
+		return true
+	case DeviceThermalStateSerious:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for Kind.
 const (
 	KindEvent       Kind = "event"
@@ -174,14 +198,29 @@ type Browser_Brands struct {
 
 // Device holds metadata about the device the app runs on.
 type Device struct {
+	// Arch CPU architecture (OTel: host.arch). E.g. arm64, amd64, x86.
+	Arch string `json:"arch,omitempty"`
+
+	// BatteryLevel Battery level as a percentage from 0 to 100. Current when the signal is captured.
+	BatteryLevel *int `json:"battery_level,omitempty"`
+
 	// Brand Consumer-facing brand. E.g. Google Pixel, Samsung Galaxy.
 	Brand string `json:"brand,omitempty"`
+
+	// IsCharging Whether the device is connected to AC, USB, or wireless power, including when full. Current when the signal is captured.
+	IsCharging *bool `json:"is_charging,omitempty"`
 
 	// IsPhysical Whether this is a physical device (true) or emulator/simulator (false).
 	IsPhysical bool `json:"is_physical,omitempty"`
 
+	// LowPowerMode Whether Android battery saver or iOS Low Power Mode is on. Current when the signal is captured.
+	LowPowerMode *bool `json:"low_power_mode,omitempty"`
+
 	// Manufacturer Device manufacturer (OTel: device.manufacturer). E.g. Apple, Samsung.
 	Manufacturer string `json:"manufacturer,omitempty"`
+
+	// MemoryTotal Total device memory in bytes.
+	MemoryTotal int64 `json:"memory_total,omitempty"`
 
 	// ModelIdentifier Machine-readable model ID (OTel: device.model.identifier). E.g. iPhone3,4, SM-G920F.
 	ModelIdentifier string `json:"model_identifier,omitempty"`
@@ -189,9 +228,25 @@ type Device struct {
 	// ModelName Human-readable model name (OTel: device.model.name). E.g. iPhone 6s Plus.
 	ModelName string `json:"model_name,omitempty"`
 
-	// Type Device form factor. E.g. mobile, tablet.
+	// ScreenDensity Physical pixels per density-independent pixel. E.g. 2.625, 3.
+	ScreenDensity float64 `json:"screen_density,omitempty"`
+
+	// ScreenHeight Screen height in physical pixels.
+	ScreenHeight int `json:"screen_height,omitempty"`
+
+	// ScreenWidth Screen width in physical pixels.
+	ScreenWidth int `json:"screen_width,omitempty"`
+
+	// ThermalState Thermal state. Current when the signal is captured. iOS reads ProcessInfo.thermalState. Android (API 29 and later) maps PowerManager status NONE to nominal, LIGHT to fair, MODERATE to serious, and SEVERE and above to critical.
+	ThermalState DeviceThermalState `json:"thermal_state,omitempty"`
+
+	// Type Device form factor. E.g. mobile, tablet. SDKs should not send it: Android has no reliable phone-versus-tablet signal. On iOS, the model_identifier prefix (iPhone, iPad) gives the device family.
+	// Deprecated: SDKs should not send it. On iOS, use the model_identifier prefix.
 	Type string `json:"type,omitempty"`
 }
+
+// DeviceThermalState Thermal state. Current when the signal is captured. iOS reads ProcessInfo.thermalState. Android (API 29 and later) maps PowerManager status NONE to nominal, LIGHT to fair, MODERATE to serious, and SEVERE and above to critical.
+type DeviceThermalState string
 
 // Event holds RUM event data.
 type Event struct {
@@ -362,6 +417,9 @@ type Meta struct {
 	// K6 holds metadata about whether or not the run happened in a K6 browser.
 	K6 K6 `json:"k6,omitempty"`
 
+	// Network holds metadata about the network connection of the device. Values are current when the signal is captured.
+	Network Network `json:"network,omitempty"`
+
 	// OS Metadata about the operating system
 	OS OS `json:"os,omitempty"`
 
@@ -381,8 +439,26 @@ type Meta struct {
 	View View `json:"view,omitempty"`
 }
 
+// Network holds metadata about the network connection of the device. Values are current when the signal is captured.
+type Network struct {
+	// CarrierName Mobile carrier name (OTel: network.carrier.name). Android only.
+	CarrierName string `json:"carrier_name,omitempty"`
+
+	// ConnectionSubtype Cellular technology (OTel: network.connection.subtype). E.g. lte, nr.
+	ConnectionSubtype string `json:"connection_subtype,omitempty"`
+
+	// ConnectionType Connection type (OTel: network.connection.type). E.g. wifi, cell, wired, unavailable.
+	ConnectionType string `json:"connection_type,omitempty"`
+
+	// Reachable Whether the internet is reachable. Distinct from connection_type: a wifi connection can have no internet access.
+	Reachable *bool `json:"reachable,omitempty"`
+}
+
 // OS holds metadata about the operating system the app runs on.
 type OS struct {
+	// APILevel Android API level (OTel: android.os.api_level). E.g. 34. Android only.
+	APILevel int `json:"api_level,omitempty"`
+
 	// BuildID OS build identifier (OTel: os.build_id). E.g. 22G91, TQ3A.230901.001.
 	BuildID string `json:"build_id,omitempty"`
 
