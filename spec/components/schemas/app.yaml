@@ -24,9 +24,11 @@ components:
           type: string
           description: >
             Per-installation identifier (OTel: app.installation.id).
-            Identical across launches of the same installed app; resets on
-            uninstall/reinstall. Privacy-preserving alternative to device.id.
-            On iOS, typically sourced from identifierForVendor.
+            Identical across launches of the same installed app; usually resets on
+            uninstall, but a restore from app backup can bring the old value back.
+            Privacy-preserving alternative to device.id.
+            On iOS, typically sourced from identifierForVendor, which stays the same
+            after a reinstall while another app from the same vendor is installed.
           x-go-type-skip-optional-pointer: true
         name:
           type: string
