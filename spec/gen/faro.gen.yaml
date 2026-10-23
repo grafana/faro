@@ -219,11 +219,10 @@ components:
         type:
           type: string
           description: 'Device form factor. E.g. mobile, tablet. SDKs should not send
-            it: Android has no reliable phone-versus-tablet signal. On iOS, the model_identifier
-            prefix (iPhone, iPad) gives the device family.'
+            it: Android has no reliable phone-versus-tablet signal. On iOS, model_name
+            (such as iPhone 15 Pro or iPad Pro) gives the device family.'
           deprecated: true
-          x-deprecated-reason: SDKs should not send it. On iOS, use the model_identifier
-            prefix.
+          x-deprecated-reason: SDKs should not send it. On iOS, use model_name.
           x-go-type-skip-optional-pointer: true
         arch:
           type: string

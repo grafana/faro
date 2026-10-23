@@ -240,8 +240,8 @@ type Device struct {
 	// ThermalState Thermal state. Current when the signal is captured. iOS reads ProcessInfo.thermalState. Android (API 29 and later) maps PowerManager status NONE to nominal, LIGHT to fair, MODERATE to serious, and SEVERE and above to critical.
 	ThermalState DeviceThermalState `json:"thermal_state,omitempty"`
 
-	// Type Device form factor. E.g. mobile, tablet. SDKs should not send it: Android has no reliable phone-versus-tablet signal. On iOS, the model_identifier prefix (iPhone, iPad) gives the device family.
-	// Deprecated: SDKs should not send it. On iOS, use the model_identifier prefix.
+	// Type Device form factor. E.g. mobile, tablet. SDKs should not send it: Android has no reliable phone-versus-tablet signal. On iOS, model_name (such as iPhone 15 Pro or iPad Pro) gives the device family.
+	// Deprecated: SDKs should not send it. On iOS, use model_name.
 	Type string `json:"type,omitempty"`
 }
 
