@@ -418,7 +418,7 @@ type Meta struct {
 	K6 K6 `json:"k6,omitempty"`
 
 	// Network holds metadata about the network connection of the device. Values are current when the signal is captured.
-	Network Network `json:"network,omitempty"`
+	Network Network `json:"network,omitempty,omitzero"`
 
 	// OS Metadata about the operating system
 	OS OS `json:"os,omitempty"`

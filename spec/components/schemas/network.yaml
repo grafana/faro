@@ -23,3 +23,5 @@ components:
             Whether the internet is reachable. Distinct from connection_type: a wifi connection can
             have no internet access.
       x-go-type-skip-optional-pointer: true
+      # omitempty never skips a value struct; omitzero drops an empty network object.
+      x-omitzero: true
