@@ -227,7 +227,9 @@ components:
           x-go-type-skip-optional-pointer: true
         arch:
           type: string
-          description: 'CPU architecture (OTel: host.arch). E.g. arm64, amd64, x86.'
+          description: 'CPU architecture, as the platform reports it. Not normalized
+            to OTel host.arch values. Android: the preferred ABI, such as arm64-v8a.
+            iOS: the architecture the app is built for, such as arm64.'
           x-go-type-skip-optional-pointer: true
         screen_width:
           type: integer

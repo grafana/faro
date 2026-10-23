@@ -198,7 +198,7 @@ type Browser_Brands struct {
 
 // Device holds metadata about the device the app runs on.
 type Device struct {
-	// Arch CPU architecture (OTel: host.arch). E.g. arm64, amd64, x86.
+	// Arch CPU architecture, as the platform reports it. Not normalized to OTel host.arch values. Android: the preferred ABI, such as arm64-v8a. iOS: the architecture the app is built for, such as arm64.
 	Arch string `json:"arch,omitempty"`
 
 	// BatteryLevel Battery level as a percentage from 0 to 100. Current when the signal is captured.
