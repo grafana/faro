@@ -1,0 +1,27 @@
+components:
+  schemas:
+    Network:
+      type: object
+      description: holds metadata about the network connection of the device. Values are current when the signal is captured.
+      properties:
+        connection_type:
+          type: string
+          description: "Connection type (OTel: network.connection.type). E.g. wifi, cell, wired, unavailable."
+          x-go-type-skip-optional-pointer: true
+        connection_subtype:
+          type: string
+          description: "Cellular technology (OTel: network.connection.subtype). E.g. lte, nr."
+          x-go-type-skip-optional-pointer: true
+        carrier_name:
+          type: string
+          description: "Mobile carrier name (OTel: network.carrier.name). Android only."
+          x-go-type-skip-optional-pointer: true
+        # No skip-pointer: false is a valid value, and a value type cannot tell it apart from absent.
+        reachable:
+          type: boolean
+          description: >-
+            Whether the internet is reachable. Distinct from connection_type: a wifi connection can
+            have no internet access.
+      x-go-type-skip-optional-pointer: true
+      # omitempty never skips a value struct; omitzero drops an empty network object.
+      x-omitzero: true

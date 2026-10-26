@@ -20,4 +20,8 @@ components:
           type: string
           description: "Human-readable OS version detail (OTel: os.description). Richer than name+version alone."
           x-go-type-skip-optional-pointer: true
+        api_level:
+          type: integer
+          description: "Android API level (OTel: android.os.api_level). E.g. 34. Android only."
+          x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true

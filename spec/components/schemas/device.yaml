@@ -26,6 +26,61 @@ components:
           x-go-type-skip-optional-pointer: true
         type:
           type: string
-          description: "Device form factor. E.g. mobile, tablet."
+          description: >-
+            Device form factor. E.g. mobile, tablet. SDKs should not send it: Android has no
+            reliable phone-versus-tablet signal. On iOS, model_name (such as iPhone 15 Pro or iPad Pro)
+            gives the device family.
+          deprecated: true
+          x-deprecated-reason: SDKs should not send it. On iOS, use model_name.
+          x-go-type-skip-optional-pointer: true
+        arch:
+          type: string
+          description: "CPU architecture, as the platform reports it. Not normalized to OTel host.arch values. Android: the preferred ABI, such as arm64-v8a. iOS: the architecture the app is built for, such as arm64."
+          x-go-type-skip-optional-pointer: true
+        screen_width:
+          type: integer
+          description: Screen width in physical pixels.
+          x-go-type-skip-optional-pointer: true
+        screen_height:
+          type: integer
+          description: Screen height in physical pixels.
+          x-go-type-skip-optional-pointer: true
+        screen_density:
+          type: number
+          format: double
+          description: Physical pixels per density-independent pixel. E.g. 2.625, 3.
+          x-go-type-skip-optional-pointer: true
+        memory_total:
+          type: integer
+          description: Total device memory in whole MB, where 1 MB is 1,048,576 bytes.
+          x-go-type-skip-optional-pointer: true
+        # The fields below have no skip-pointer: false and 0 are valid values,
+        # and a value type cannot tell them apart from absent.
+        battery_level:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Battery level as a percentage from 0 to 100. Current when the signal is captured.
+        is_charging:
+          type: boolean
+          description: >-
+            Whether the device is connected to AC, USB, or wireless power, including when full.
+            Current when the signal is captured.
+        low_power_mode:
+          type: boolean
+          description: >-
+            Whether Android battery saver or iOS Low Power Mode is on. Current when the signal is
+            captured.
+        thermal_state:
+          type: string
+          enum:
+            - nominal
+            - fair
+            - serious
+            - critical
+          description: >-
+            Thermal state. Current when the signal is captured. iOS reads ProcessInfo.thermalState.
+            Android (API 29 and later) maps PowerManager status NONE to nominal, LIGHT to fair,
+            MODERATE to serious, and SEVERE and above to critical.
           x-go-type-skip-optional-pointer: true
       x-go-type-skip-optional-pointer: true
