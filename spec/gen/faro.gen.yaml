@@ -564,6 +564,10 @@ components:
         geo:
           description: Geo information (populated server-side by the receiver)
           $ref: '#/components/schemas/Geo'
+        sampling:
+          description: Adaptive sampling verdict for the session (absent when the
+            SDK does not sample by rule)
+          $ref: '#/components/schemas/Sampling'
       x-go-type-skip-optional-pointer: true
     Network:
       type: object
@@ -690,6 +694,112 @@ components:
           type: object
           description: OTel trace data (OTLP JSON format)
           $ref: '#/components/schemas/Traces'
+    Sampling:
+      type: object
+      description: 'holds the adaptive sampling verdict for the session the payload
+        belongs to.
+
+        Stamped by the SDK once per batch body, next to `session`. Absent when the
+        SDK
+
+        does not sample by rule. The receiver validates the verdict (recomputes `keyU32`
+
+        from `sessionId`, checks ranges and coherence) and never decides or drops
+        on it.
+
+
+        Seven fields are fixed at the decision point and identical on every body of
+        a
+
+        session: `schema`, `sessionId`, `inBaseSample`, `baseRate`, `replayRate`,
+
+        `rulesHash`, `keyU32`. The other four (`keptBy`, `keptByRule`, `triggerRate`,
+
+        `replayKept`) can only widen afterwards, when a trigger rule fires.
+
+
+        Every field is optional in the schema so a partial verdict still decodes;
+        the
+
+        receiver flags it as invalid. Fields are generated as pointers on purpose,
+        so a
+
+        missing field is distinguishable from a zero value. The rules document that
+
+        produces a verdict is specified in `spec/sampling/`.
+
+        '
+      properties:
+        schema:
+          type: integer
+          description: Version of the verdict format (not of the rules document).
+            Currently `1`.
+          minimum: 1
+        sessionId:
+          type: string
+          description: The session id as it was at the decision point. Identity for
+            counting and grouping; stays the same if the SDK later moves the session
+            to a new id.
+        inBaseSample:
+          type: boolean
+          description: Whether the base-rate roll kept the session (`keyU32 / 2^32
+            < baseRate`).
+        keptBy:
+          type: string
+          description: Why the session is kept. `null` means not kept.
+          enum:
+            - sample
+            - trigger
+            - both
+          nullable: true
+        keptByRule:
+          type: string
+          description: Id of the trigger rule that fired. `null` unless `keptBy` is
+            `trigger` or `both`.
+          nullable: true
+        baseRate:
+          type: number
+          format: double
+          description: The base rate that applied to this session, in [0, 1]. Estimates
+            weight by `1 / baseRate`.
+          minimum: 0
+          maximum: 1
+        replayRate:
+          type: number
+          format: double
+          description: The base rule's `replayRate`, in [0, 1], so the receiver can
+            check the replay roll. `null` unless a `keep_session_and_replay` base
+            rule applied.
+          minimum: 0
+          maximum: 1
+          nullable: true
+        triggerRate:
+          type: number
+          format: double
+          description: The firing rule's `triggerRate`, in [0, 1]. `null` if the rule
+            has none.
+          minimum: 0
+          maximum: 1
+          nullable: true
+        replayKept:
+          type: boolean
+          description: Whether replay was kept, by base rate and `replayRate` or by
+            a trigger. Recordings with `false` are discarded.
+        rulesHash:
+          type: string
+          description: FNV-1a 64-bit hash, 16 hex characters, of the RFC 8785 canonical
+            form of the normalised rules document that produced this verdict. See
+            `spec/sampling/README.md`.
+          pattern: ^[0-9a-f]{16}$
+        keyU32:
+          type: integer
+          format: int64
+          description: '`keyU32(sessionId)`: FNV-1a 32-bit over the UTF-8 bytes of
+            the session id, then the MurmurHash3 fmix32 finalizer. Unsigned 32-bit,
+            so a 64-bit integer here. A check value the receiver recomputes, not an
+            id.'
+          minimum: 0
+          maximum: 4294967295
     SDK:
       type: object
       description: holds metadata about the app agent that produced the event.
