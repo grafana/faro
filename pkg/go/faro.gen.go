@@ -608,7 +608,7 @@ type Sampling struct {
 	// ReplayRate The base rule's `replayRate`, in [0, 1], so the receiver can check the replay roll. `null` unless a `keep_session_and_replay` base rule applied.
 	ReplayRate *float64 `json:"replayRate,omitempty"`
 
-	// RulesHash FNV-1a 64-bit hash, 16 hex characters, of the canonicalised rules document that produced this verdict.
+	// RulesHash FNV-1a 64-bit hash, 16 hex characters, of the RFC 8785 canonical form of the normalised rules document that produced this verdict. See `spec/sampling/README.md`.
 	RulesHash *string `json:"rulesHash,omitempty"`
 
 	// Schema Version of the verdict format (not of the rules document). Currently `1`.

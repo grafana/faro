@@ -787,8 +787,9 @@ components:
             a trigger. Recordings with `false` are discarded.
         rulesHash:
           type: string
-          description: FNV-1a 64-bit hash, 16 hex characters, of the canonicalised
-            rules document that produced this verdict.
+          description: FNV-1a 64-bit hash, 16 hex characters, of the RFC 8785 canonical
+            form of the normalised rules document that produced this verdict. See
+            `spec/sampling/README.md`.
           pattern: ^[0-9a-f]{16}$
         keyU32:
           type: integer
