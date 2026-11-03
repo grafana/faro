@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/grafana/faro/spec/sampling/rules.schema.json",
+  "title": "faro.sampling.rules/v1",
+  "description": "A Faro adaptive sampling rules document. Passed to the SDK as data (sessionTracking.sampling). Rules without a trigger are evaluated in document order at the decision point and the first whose scope matches decides (drop, or a base rate); rules with a trigger are unordered and keep a session because of something that happened in it. Keeps only widen; nothing un-keeps.",
+  "type": "object",
+  "required": ["schema", "rules"],
+  "properties": {
+    "schema": {
+      "const": "faro.sampling.rules/v1",
+      "description": "Document version. An unknown value makes the SDK warn and keep everything."
+    },
+    "rules": {
+      "type": "array",
+      "description": "Order matters for rules without a trigger: first match decides.",
+      "items": { "$ref": "#/$defs/rule" }
+    }
+  },
+  "$defs": {
+    "globMap": {
+      "type": "object",
+      "description": "Field or attribute path to glob. `*` is the only wildcard and matches any run of characters, including none; the pattern must match the whole value. Every listed entry must match.",
+      "additionalProperties": { "type": "string" }
+    },
+    "rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "trigger": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "A trigger type from the platform's catalogue. Unknown types make the rule inert with a warning, not an error, so the schema does not enumerate them. Web, v1: error, custom_event, page_view, user_action, web_vital_threshold, http_error, console_error, attribute. Reserved: journey.",
+          "examples": ["error", "custom_event", "page_view", "user_action", "web_vital_threshold", "http_error", "console_error", "attribute"]
+        },
+        "match": {
+          "$ref": "#/$defs/globMap",
+          "description": "Globs on the event's fields. Absent means any event of this type. For web_vital_threshold, `threshold` is compared as a number (fires at or above) instead of as a glob."
+        }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "required": ["id", "action"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,64}$",
+          "description": "Author-chosen, unique in the document, stable across edits and reorders. Reported as keptByRule in the verdict."
+        },
+        "trigger": {
+          "oneOf": [{ "$ref": "#/$defs/trigger" }, { "type": "null" }],
+          "description": "Absent or null means a rule without a trigger."
+        },
+        "scope": {
+          "$ref": "#/$defs/globMap",
+          "description": "Attribute paths (session.attributes.<key>, app.version, browser.name, ...) to globs. Absent or {} means every session. Matched once at the decision point and frozen."
+        },
+        "action": {
+          "type": "string",
+          "enum": ["keep_session", "keep_session_and_replay", "drop"],
+          "description": "keep_session_and_replay implies keep_session."
+        },
+        "baseRate": {
+          "$ref": "#/$defs/rate",
+          "description": "Keep rules without a trigger only, and required there. Probability a matching session is in the base sample. 0 means triggers only for this scope."
+        },
+        "replayRate": {
+          "$ref": "#/$defs/rate",
+          "description": "keep_session_and_replay rules without a trigger only. Share of base-sampled sessions that also record replay. Default 1."
+        },
+        "triggerRate": {
+          "$ref": "#/$defs/rate",
+          "description": "Trigger rules only. When the trigger fires, the fraction of sessions actually kept by it. Default 1."
+        },
+        "priority": false
+      },
+      "allOf": [
+        {
+          "$comment": "Rules without a trigger: no triggerRate.",
+          "if": { "$ref": "#/$defs/untriggered" },
+          "then": { "properties": { "triggerRate": false } }
+        },
+        {
+          "$comment": "Exclusion: no trigger, drop. Carries nothing else.",
+          "if": {
+            "allOf": [{ "$ref": "#/$defs/untriggered" }, { "properties": { "action": { "const": "drop" } } }]
+          },
+          "then": { "properties": { "baseRate": false, "replayRate": false } }
+        },
+        {
+          "$comment": "Base rate: no trigger, keep action. baseRate required; replayRate only with keep_session_and_replay.",
+          "if": {
+            "allOf": [{ "$ref": "#/$defs/untriggered" }, { "properties": { "action": { "enum": ["keep_session", "keep_session_and_replay"] } } }]
+          },
+          "then": { "required": ["baseRate"] }
+        },
+        {
+          "if": {
+            "allOf": [{ "$ref": "#/$defs/untriggered" }, { "properties": { "action": { "const": "keep_session" } } }]
+          },
+          "then": { "properties": { "replayRate": false } }
+        },
+        {
+          "$comment": "Trigger: keep action only (a triggered drop would un-keep a session that is already streaming and billed), no baseRate, no replayRate.",
+          "if": { "not": { "$ref": "#/$defs/untriggered" } },
+          "then": {
+            "properties": {
+              "action": { "enum": ["keep_session", "keep_session_and_replay"] },
+              "baseRate": false,
+              "replayRate": false
+            }
+          }
+        }
+      ]
+    },
+    "untriggered": {
+      "$comment": "True when the rule has no trigger: the field is absent or null.",
+      "anyOf": [
+        { "not": { "required": ["trigger"] } },
+        { "properties": { "trigger": { "type": "null" } } }
+      ]
+    }
+  }
+}
