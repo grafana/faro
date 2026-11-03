@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "description": "Keep the go directive in go.mod at the minimum supported version. It sets the minimum Go version for every module that imports this one, so it must not follow patch releases. The toolchain directive is still updated.",
+      "matchManagers": ["gomod"],
+      "matchDepTypes": ["golang"],
+      "matchDepNames": ["go"],
+      "enabled": false
+    }
+  ]
+}
