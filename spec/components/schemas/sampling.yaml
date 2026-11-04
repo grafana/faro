@@ -45,7 +45,7 @@ components:
         baseRate:
           type: number
           format: double
-          description: The base rate that applied to this session, in [0, 1]. Estimates weight by `1 / baseRate`.
+          description: The document's base rate when this session was decided, in [0, 1]. Shown next to every number computed from the base sample.
           minimum: 0
           maximum: 1
         replayRate:

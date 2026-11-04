@@ -587,7 +587,7 @@ type SDKIntegration struct {
 // missing field is distinguishable from a zero value. The rules document that
 // produces a verdict is specified in `spec/sampling/`.
 type Sampling struct {
-	// BaseRate The base rate that applied to this session, in [0, 1]. Estimates weight by `1 / baseRate`.
+	// BaseRate The document's base rate when this session was decided, in [0, 1]. Shown next to every number computed from the base sample.
 	BaseRate *float64 `json:"baseRate,omitempty"`
 
 	// InBaseSample Whether the base-rate roll kept the session (`keyU32 / 2^32 < baseRate`).
