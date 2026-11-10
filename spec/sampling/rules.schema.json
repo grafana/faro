@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/grafana/faro/spec/sampling/rules.schema.json",
   "title": "faro.sampling.rules/v1",
-  "description": "A Faro adaptive sampling rules document. Passed to the SDK as data (sessionTracking.sampling). Rules without a trigger are evaluated in document order at the decision point and the first whose scope matches decides (drop, or a base rate); rules with a trigger are unordered and keep a session because of something that happened in it. Keeps only widen; nothing un-keeps.",
+  "description": "A Faro adaptive sampling rules document. Passed to the SDK as data (sessionTracking.sampling). Rules without a trigger are evaluated in document order at the decision point and the first whose scope matches decides (drop, or the base rate); rules with a trigger are unordered and keep a session because of something that happened in it. Keeps only widen; nothing un-keeps. A document has at most one base rate rule and it has no scope, so every session a drop rule did not exclude is sampled at one rate; with none, everything is kept.",
   "type": "object",
   "required": ["schema", "rules"],
   "properties": {
@@ -12,8 +12,11 @@
     },
     "rules": {
       "type": "array",
-      "description": "Order matters for rules without a trigger: first match decides.",
-      "items": { "$ref": "#/$defs/rule" }
+      "description": "Order matters for rules without a trigger: first match decides. At most one base rate rule.",
+      "items": { "$ref": "#/$defs/rule" },
+      "contains": { "$ref": "#/$defs/baseRateRule" },
+      "minContains": 0,
+      "maxContains": 1
     }
   },
   "$defs": {
@@ -57,7 +60,7 @@
         },
         "scope": {
           "$ref": "#/$defs/globMap",
-          "description": "Attribute paths (session.attributes.<key>, app.version, browser.name, ...) to globs. Absent or {} means every session. Matched once at the decision point and frozen."
+          "description": "Attribute paths (session.attributes.<key>, app.version, browser.name, ...) to globs. Absent or {} means every session. Matched once at the decision point and frozen. Drop rules and trigger rules only; the base rate rule applies to every session."
         },
         "action": {
           "type": "string",
@@ -66,7 +69,7 @@
         },
         "baseRate": {
           "$ref": "#/$defs/rate",
-          "description": "Keep rules without a trigger only, and required there. Probability a matching session is in the base sample. 0 means triggers only for this scope."
+          "description": "The base rate rule only, and required there. Probability a session is in the base sample. 0 means triggers only."
         },
         "replayRate": {
           "$ref": "#/$defs/rate",
@@ -81,32 +84,33 @@
       "allOf": [
         {
           "$comment": "Rules without a trigger: no triggerRate.",
-          "if": { "$ref": "#/$defs/untriggered" },
+          "if": { "$ref": "#/$defs/withoutTrigger" },
           "then": { "properties": { "triggerRate": false } }
         },
         {
           "$comment": "Exclusion: no trigger, drop. Carries nothing else.",
           "if": {
-            "allOf": [{ "$ref": "#/$defs/untriggered" }, { "properties": { "action": { "const": "drop" } } }]
+            "allOf": [{ "$ref": "#/$defs/withoutTrigger" }, { "properties": { "action": { "const": "drop" } } }]
           },
           "then": { "properties": { "baseRate": false, "replayRate": false } }
         },
         {
-          "$comment": "Base rate: no trigger, keep action. baseRate required; replayRate only with keep_session_and_replay.",
-          "if": {
-            "allOf": [{ "$ref": "#/$defs/untriggered" }, { "properties": { "action": { "enum": ["keep_session", "keep_session_and_replay"] } } }]
-          },
-          "then": { "required": ["baseRate"] }
+          "$comment": "Base rate: no trigger, keep action. baseRate required, no scope (an empty one is the same as none); replayRate only with keep_session_and_replay.",
+          "if": { "$ref": "#/$defs/baseRateRule" },
+          "then": {
+            "required": ["baseRate"],
+            "properties": { "scope": { "type": "object", "maxProperties": 0 } }
+          }
         },
         {
           "if": {
-            "allOf": [{ "$ref": "#/$defs/untriggered" }, { "properties": { "action": { "const": "keep_session" } } }]
+            "allOf": [{ "$ref": "#/$defs/withoutTrigger" }, { "properties": { "action": { "const": "keep_session" } } }]
           },
           "then": { "properties": { "replayRate": false } }
         },
         {
           "$comment": "Trigger: keep action only (a triggered drop would un-keep a session that is already streaming and billed), no baseRate, no replayRate.",
-          "if": { "not": { "$ref": "#/$defs/untriggered" } },
+          "if": { "not": { "$ref": "#/$defs/withoutTrigger" } },
           "then": {
             "properties": {
               "action": { "enum": ["keep_session", "keep_session_and_replay"] },
@@ -117,11 +121,19 @@
         }
       ]
     },
-    "untriggered": {
+    "withoutTrigger": {
       "$comment": "True when the rule has no trigger: the field is absent or null.",
+      "type": "object",
       "anyOf": [
-        { "not": { "required": ["trigger"] } },
-        { "properties": { "trigger": { "type": "null" } } }
+        { "type": "object", "not": { "type": "object", "required": ["trigger"] } },
+        { "type": "object", "properties": { "trigger": { "type": "null" } } }
+      ]
+    },
+    "baseRateRule": {
+      "$comment": "True for a rule without a trigger whose action keeps: the base rate rule. Used both to shape it and to count it (at most one per document).",
+      "allOf": [
+        { "$ref": "#/$defs/withoutTrigger" },
+        { "type": "object", "required": ["action"], "properties": { "action": { "enum": ["keep_session", "keep_session_and_replay"] } } }
       ]
     }
   }
