@@ -2,7 +2,7 @@ module github.com/grafana/faro/pkg/go
 
 go 1.26.0
 
-toolchain go1.26.4
+toolchain go1.26.11
 
 require (
 	github.com/oapi-codegen/runtime v1.7.0
