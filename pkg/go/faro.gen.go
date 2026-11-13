@@ -486,9 +486,6 @@ type Network struct {
 
 	// ConnectionType Connection type (OTel: network.connection.type). E.g. wifi, cell, wired, unavailable.
 	ConnectionType string `json:"connection_type,omitempty"`
-
-	// Reachable Whether the internet is reachable. Distinct from connection_type: a wifi connection can have no internet access.
-	Reachable *bool `json:"reachable,omitempty"`
 }
 
 // OS holds metadata about the operating system the app runs on.
