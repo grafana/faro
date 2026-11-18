@@ -70,3 +70,4 @@ Do not include a test plan section when opening PRs.
 - The Faro Web SDK → https://github.com/grafana/faro-web-sdk
 - The Faro ↔ OTel translator → contributed upstream to `opentelemetry-collector-contrib/pkg/translator/faro`
 - `pkg/translator/faro/` is a placeholder README only
+- Security issues should be reported via [Grafana's security issue reporting page](https://grafana.com/legal/report-a-security-issue/) and not directly in this repository.
